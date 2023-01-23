@@ -4,6 +4,15 @@ Here is the things during my work.
 
 [toc]
 
+## Progress
+
+- [x] Implement reading information from file
+- [x] Implement collecting and sorting information and form a structure of information for further uses.
+- [ ] Implement Dependencies Checks, including `modId`, `versionRange` and `mandatory` attributes.
+- [ ] *more in the future*.
+
+
+
 ## Links
 
 ---
