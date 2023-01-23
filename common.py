@@ -33,7 +33,7 @@ def getNonNegativeMin(a, b):
 def getInfo(res: str, start=0, end=None):
     OHEADER = f'{OHEADER_G}/getInfo()'
     global gmode
-    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
 
     end = res.__len__()
     dict1 = {}
@@ -65,35 +65,41 @@ def getInfo(res: str, start=0, end=None):
             print_log(strings.NO_MORE_ITEM)
             break
 
-        left_1 = raw.rfind('\\r', i, k) + 2
-        left_2 = raw.rfind('\\n', i, k) + 2
+        left_1 = raw.rfind('\r', i, k) + 1
+        left_2 = raw.rfind('\n', i, k) + 1
+        # print_debug(['left_1, left_2: ', left_1, left_2], OHEADER, mode.isDebug())
         left_idx = max(left_1, left_2)
-        if left_idx < 0:
+        if left_idx <= 0:
             # print_log()
             raise IndexError()
 
         left_str = raw[left_idx: k]
+        # print_debug(['left_str, left_idx, k: ', left_str, left_idx, k], OHEADER, mode.isDebug())
         # strip out blankspaces
-        left_str = left_str.strip()
+        left_str = left_str.strip('\r\n ')
 
         if left_str != 'description':
-            right_1 = raw.find('\\r', k, end)
-            right_2 = raw.find('\\n', k, end)
+            right_1 = raw.find('\r', k, end)
+            right_2 = raw.find('\n', k, end)
             right_idx = getNonNegativeMin(right_1, right_2)
             right_str = raw[k + 1: right_idx]
         else:
-            right_1 = raw.find("\\\'\\\'\\\'", k, end) + 3
-            right_2 = raw.find("\\\'\\\'\\\'", right_1, end)
-            right_idx = right_2
+            right_1 = raw.find("\'\'\'", k, end) + 3
+            right_2 = raw.find("\'\'\'", right_1, end)
+            right_idx = right_2 + 3
             right_str = raw[right_1:right_2]
             print_debug(['description: ', right_str], OHEADER, mode.isDebug())
 
-        # strip out blankspaces
-        right_str = right_str.strip()
+        # strip out blankspaces and \r\n
+        right_str = right_str.strip('\r\n ')
 
         dict1[left_str] = right_str
 
-        i = right_idx + 2
+        i = right_idx
+        # print_debug(['i: ', i], OHEADER, mode.isDebug())
+
+    # for i in dict1.keys():
+    #     dict1[i] = dict1[i].strip('\r\n')
 
     print_debug(['dict1: ', dict1], OHEADER, mode.isDebug())
     dict1['raw'] = raw

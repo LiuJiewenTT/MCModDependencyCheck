@@ -44,7 +44,8 @@ def main():
 
         with path_target.open(mode='r') as file_target:
             content_bytes = file_target.read()
-            content_str = str(content_bytes)
+            # content_str = str(content_bytes)
+            content_str = content_bytes.decode()
 
             print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 
