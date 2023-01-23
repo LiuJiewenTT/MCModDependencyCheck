@@ -1,29 +1,38 @@
 import os
 import strings
 from constants import *
+from DebugMode import *
 
-OHEADER_G = f'{os.path.basename(__file__)}'
+OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
+# print(__file__)
+
+gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 def print_log(para):
     print(LOGMODE_LOG_OHEADER, end='')
     print(para)
 
-def print_debug(para, location='unknown'):
+def print_debug(para, location='unknown', enabled=True):
+    if enabled is False:
+        return
     print(LOGMODE_DEBUG_OHEADER + f'in [{location}]: ', end='')
     print(para)
 
-def getPart(res: str, substr: str=None):
-    OHEADER = f'{OHEADER_G}/getPart()'
+def getParts(res: str, substr: str=None):
+    OHEADER = f'{OHEADER_G}/getParts()'
     if substr is None:
         substr = PART_LOCATOR
 
-    parts_raw = getPart_raw(res, substr)
+    parts_raw = getParts_raw(res, substr)
 
     # should return some object
     return parts_raw
 
-def getPart_raw(res: str, substr: str=None):
-    OHEADER = f'{OHEADER_G}/getPart_raw()'
+def getParts_raw(res: str, substr: str=None):
+    OHEADER = f'{OHEADER_G}/getParts_raw()'
+    global gmode
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
     if substr is None:
         substr = PART_LOCATOR
     lst1 = []
@@ -44,7 +53,7 @@ def getPart_raw(res: str, substr: str=None):
         # print(loc, res[st], res[st+1])
         # break
         lst1.append(loc)
-    print_debug(lst1, OHEADER)
+    print_debug(lst1, OHEADER, mode.isDebug())
     i = 0
     j = 1
     a = b = 0
@@ -55,14 +64,14 @@ def getPart_raw(res: str, substr: str=None):
         except IndexError:
             break
         except Exception as e:
-            print_debug(e, OHEADER)
+            print_debug(e, OHEADER, mode.isDebug())
 
         try:
             b = lst1[j]
-            print_debug(b, OHEADER)
+            print_debug(b, OHEADER, mode.isDebug())
             str_part = res[a:b]
         except:
-            print_debug(lst2, OHEADER)
+            print_debug(lst2, OHEADER, mode.isDebug())
             str_part = res[a:]
 
         lst2.append(str_part)

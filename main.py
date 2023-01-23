@@ -1,15 +1,26 @@
 import zipfile
 import os
 
+from DebugMode import *
+initDefault_gmode(DEBUGMODE_GDEBUG)
+
 import constants
 from constants import *
 import strings
 from common import *
 
-OHEADER_G = f'{os.path.basename(__file__)}'
+
+OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
+# print(__file__)
+
+gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 def main():
     OHEADER = f'{OHEADER_G}/main()'
+
+    global gmode
+    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
+
     filedir = 'testres/'
     filelist = os.listdir(filedir)
 
@@ -38,10 +49,11 @@ def main():
             # print_debug(lines, OHEADER)
             # for i in lines:
             #     print_debug(i, OHEADER)
-            print_debug(content_str, OHEADER)
 
-            parts = getPart(content_str)
-            print_debug(parts, OHEADER)
+            print_debug(content_str, OHEADER, enabled=mode.isDebug())
+
+            parts = getParts(content_str)
+            print_debug(parts, OHEADER, enabled=mode.isDebug())
 
         pass
 
