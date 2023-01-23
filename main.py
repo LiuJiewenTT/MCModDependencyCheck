@@ -46,12 +46,12 @@ def main():
             content_bytes = file_target.read()
             content_str = str(content_bytes)
 
-            print_debug(content_str, OHEADER, enabled=mode.isDebug())
+            print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 
             info = getInfo(content_str)
 
             parts = getParts(content_str)
-            print_debug(parts, OHEADER, enabled=mode.isDebug())
+            print_debug(['parts: ', parts], OHEADER, enabled=mode.isDebug())
 
         pass
 
