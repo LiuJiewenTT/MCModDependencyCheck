@@ -63,8 +63,10 @@ def getInfo(res: str, start=0, end=None):
 
     raw: str
     if j == -1:
-        print_log(strings.CONTENT_INCOMPLETED)
-        print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found after recognizing infotype'], OHEADER, mode.isDebug())
+        if dict1['infotype'] == 'mods':
+            # Dependencies are missing.
+            print_log(strings.CONTENT_INCOMPLETED)
+            print_debug([strings.CONTENT_INCOMPLETED, '\'[[\' not found after recognizing infotype'], OHEADER, mode.isDebug())
         raw = res[i:]
     else:
         raw = res[i:j]
@@ -73,7 +75,7 @@ def getInfo(res: str, start=0, end=None):
 
     # dict1['raw'] = raw
 
-    # not good for description
+    # not good for dependencies, good for description
     while True:
         k = raw.find('=', i, end)
         if k == -1:
@@ -87,8 +89,9 @@ def getInfo(res: str, start=0, end=None):
         if left_idx <= 0:   # (-1) + 1 = 0
             # print_log()
             # raise IndexError()
-            left_idx = 0
-            print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+            left_idx = i
+            # print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+            print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[i, k, str]: [{i}, {k}] .', raw[i:k]], OHEADER, mode.isDebug())
 
         left_str = raw[left_idx: k]
         # print_debug(['left_str, left_idx, k: ', left_str, left_idx, k], OHEADER, mode.isDebug())
@@ -102,7 +105,8 @@ def getInfo(res: str, start=0, end=None):
                 right_idx = getNonNegativeMin(right_1, right_2)
             except ValueError:
                 right_idx = end
-                print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
+                # print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
+                print_debug(strings.MEET_PURE_END + strings.ON_THE_RIGHT, OHEADER, mode.isDebug())
 
             right_str = raw[k + 1: right_idx]
         else:
@@ -118,7 +122,7 @@ def getInfo(res: str, start=0, end=None):
         dict1[left_str] = right_str
 
         i = right_idx
-        # print_debug(['i: ', i], OHEADER, mode.isDebug())
+        print_debug(['i: ', i], OHEADER, mode.isDebug())
 
     # for i in dict1.keys():
     #     dict1[i] = dict1[i].strip('\r\n')
@@ -132,7 +136,7 @@ def getInfo(res: str, start=0, end=None):
 def getParts(res: str, substr: str=None):
     OHEADER = f'{OHEADER_G}/getParts()'
     global gmode
-    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
     if substr is None:
         substr = PART_LOCATOR
@@ -148,9 +152,10 @@ def getParts(res: str, substr: str=None):
             break
         st = loc
         st = res.find(']]', st, ed)
+        # print_debug( f'[str, st(loc), st, ed]: [{res[loc:ed]}, {loc}, {st}, {ed}]', OHEADER, mode.isDebug())
         if st == -1:
             print_log(strings.CONTENT_INCOMPLETED)
-            print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found'], OHEADER, mode.isDebug())
+            print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found: '], OHEADER, mode.isDebug())
             break
         st += 2
         # print(loc, res[st], res[st+1])
