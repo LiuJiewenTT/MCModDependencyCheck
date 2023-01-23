@@ -40,17 +40,15 @@ def main():
         if( path_target.exists() ):
             print_log(strings.TARGET_FOUNDED)
         else:
-            return [ RETV_ERROR , strings.FILE_NOT_FOUND + constants.target_path ]
+            return [ RETV_ERROR , strings.ERROR_FILE_NOT_FOUND + constants.target_path ]
 
         with path_target.open(mode='r') as file_target:
             content_bytes = file_target.read()
             content_str = str(content_bytes)
-            # print_debug(lines[0].__class__, OHEADER)
-            # print_debug(lines, OHEADER)
-            # for i in lines:
-            #     print_debug(i, OHEADER)
 
             print_debug(content_str, OHEADER, enabled=mode.isDebug())
+
+            info = getInfo(content_str)
 
             parts = getParts(content_str)
             print_debug(parts, OHEADER, enabled=mode.isDebug())
