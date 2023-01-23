@@ -29,31 +29,46 @@ def getNonNegativeMin(a, b):
         print_log(strings.ERROR_NO_NONNEGATIVE_VALUE + f': min[{a}, {b}] >= 0')
         raise ValueError(strings.ERROR_NO_NONNEGATIVE_VALUE + f': min[{a}, {b}] >= 0')
 
+def isInfoTypeDependency(info: dict):
+    s1: str = info['infotype']
+    s2: str = s1.partition('.')[0]
+    if s2 == 'dependencies':
+        return True
+    return False
 
 def getInfo(res: str, start=0, end=None):
     OHEADER = f'{OHEADER_G}/getInfo()'
     global gmode
-    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-    end = res.__len__()
+    if end is None:
+        end = res.__len__()
     dict1 = {}
 
-    i = res.find('[[', start, end) + 2
+    i = res.find('[[', start, end)
     j = res.find(']]', start, end)
     if i == -1 or j == -1:
         print_log(strings.CONTENT_INCOMPLETED)
+        print_debug([strings.CONTENT_INCOMPLETED, '\'[[\' or \']]\' not found'], OHEADER, mode.isDebug())
     if i >= j:
         print_log(strings.INTERVAL_NOT_EXIST + f'[{i},{j}). ')
 
+    i += 2
+
     dict1['infotype'] = res[i:j]
-    # print(dict1['infotype'])
+    print_debug(['infotype: ', dict1['infotype']], OHEADER, mode.isDebug())
 
     i = j + 2
     j = res.find('[[', i, end)
+
+    raw: str
     if j == -1:
         print_log(strings.CONTENT_INCOMPLETED)
+        print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found after recognizing infotype'], OHEADER, mode.isDebug())
+        raw = res[i:]
+    else:
+        raw = res[i:j]
 
-    raw: str = res[i:j]
     print_debug(['raw: ', raw], OHEADER, mode.isDebug())
 
     # dict1['raw'] = raw
@@ -69,9 +84,11 @@ def getInfo(res: str, start=0, end=None):
         left_2 = raw.rfind('\n', i, k) + 1
         # print_debug(['left_1, left_2: ', left_1, left_2], OHEADER, mode.isDebug())
         left_idx = max(left_1, left_2)
-        if left_idx <= 0:
+        if left_idx <= 0:   # (-1) + 1 = 0
             # print_log()
-            raise IndexError()
+            # raise IndexError()
+            left_idx = 0
+            print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
 
         left_str = raw[left_idx: k]
         # print_debug(['left_str, left_idx, k: ', left_str, left_idx, k], OHEADER, mode.isDebug())
@@ -81,7 +98,12 @@ def getInfo(res: str, start=0, end=None):
         if left_str != 'description':
             right_1 = raw.find('\r', k, end)
             right_2 = raw.find('\n', k, end)
-            right_idx = getNonNegativeMin(right_1, right_2)
+            try:
+                right_idx = getNonNegativeMin(right_1, right_2)
+            except ValueError:
+                right_idx = end
+                print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
+
             right_str = raw[k + 1: right_idx]
         else:
             right_1 = raw.find("\'\'\'", k, end) + 3
@@ -104,21 +126,13 @@ def getInfo(res: str, start=0, end=None):
     print_debug(['dict1: ', dict1], OHEADER, mode.isDebug())
     dict1['raw'] = raw
 
+    return dict1
+
 
 def getParts(res: str, substr: str=None):
     OHEADER = f'{OHEADER_G}/getParts()'
-    if substr is None:
-        substr = PART_LOCATOR
-
-    parts_raw = getParts_raw(res, substr)
-
-    # should return some object
-    return parts_raw
-
-def getParts_raw(res: str, substr: str=None):
-    OHEADER = f'{OHEADER_G}/getParts_raw()'
     global gmode
-    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
 
     if substr is None:
         substr = PART_LOCATOR
@@ -133,10 +147,12 @@ def getParts_raw(res: str, substr: str=None):
             print_log(strings.NO_MORE_PARTS)
             break
         st = loc
-        st = res.find(']]', st, ed) + 2
+        st = res.find(']]', st, ed)
         if st == -1:
             print_log(strings.CONTENT_INCOMPLETED)
+            print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found'], OHEADER, mode.isDebug())
             break
+        st += 2
         # print(loc, res[st], res[st+1])
         # break
         lst1.append(loc)

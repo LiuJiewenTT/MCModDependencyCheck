@@ -8,6 +8,8 @@ import constants
 from constants import *
 import strings
 from common import *
+from ModInfo import ModInfo
+from DependencyInfo import DependencyInfo
 
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
@@ -50,9 +52,25 @@ def main():
             print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 
             info = getInfo(content_str)
+            if( info['infotype'] == 'mods'):
+                modinfo = ModInfo(info)
+                print_log(strings.CREATE_MODINFO)
+            else:
+                print_log([strings.INFO_NOT_MOD, f'infotype: {info["infotype"]}'])
 
             parts = getParts(content_str)
             print_debug(['parts: ', parts], OHEADER, enabled=mode.isDebug())
+
+            dependenciesinfo = []
+            for part in parts:
+                print_debug(['part: ', part], OHEADER, mode.isDebug())
+                info = getInfo(part)
+                print_debug(['info: ', info], OHEADER, mode.isDebug())
+                if( isInfoTypeDependency(info) ):
+                    dependencyinfo = DependencyInfo(info)
+                    dependenciesinfo.append(dependencyinfo)
+                else:
+                    pass
 
         pass
 
