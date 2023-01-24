@@ -21,14 +21,38 @@ class ModInfo:
         if isinstance(dict_info, dict) is False:
             print_log(strings.VALUETYPE_ERROR)
             return
-        pass
+        self.datadict = dict_info
+        self.resolveDict()
 
     def resolveDict(self):
-        self.modId = self.datadict['modId']
-        self.version = self.datadict['version']
-        self.displayName = self.datadict['displayName']
-        self.authors = self.datadict['authors']
-        self.description = self.datadict['description']
+        OHEADER = f'{OHEADER_G}/resolveDict()'
+        mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-        self.raw = self.datadict['raw']
+        self.clearValueType()
+        try:
+            self.modId = self.datadict['modId']
+            self.version = self.datadict['version']
+            self.displayName = self.datadict['displayName']
+            self.authors = self.datadict['authors']
+            self.description = self.datadict['description']
+
+            self.raw = self.datadict['raw']
+        except KeyError as ke:
+            print_debug([f'KeyError: {ke}. Keys: ', self.datadict.keys()], OHEADER, mode.isDebug())
+            raise ke
         return
+
+    def clearValueType(self):
+        OHEADER = f'{OHEADER_G}/clearValueType()'
+        mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+        for key in self.datadict.keys():
+            if key != 'raw':
+                s1 = self.datadict[key].strip('\'" ')
+                if self.datadict[key] != s1:
+                    # print_debug([f'neq: [key, str, s1]: [{key}, {self.datadict[key]}, {s1}]'], OHEADER, mode.isDebug())
+                    # print_debug([f'raw: ', self.datadict['raw']], OHEADER, mode.isDebug())
+                    self.datadict[key] = s1
+                else:
+                    # print_debug([f'eq: [key, str, s1]: [{key}, {self.datadict[key]}, {s1}]'], OHEADER, mode.isDebug())
+                    pass

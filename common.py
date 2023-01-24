@@ -76,6 +76,7 @@ def getInfo(res: str, start=0, end=None):
     # dict1['raw'] = raw
 
     # not good for dependencies, good for description
+    i = 0
     while True:
         k = raw.find('=', i, end)
         if k == -1:
