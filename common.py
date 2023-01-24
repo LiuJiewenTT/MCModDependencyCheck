@@ -199,3 +199,7 @@ def getParts(res: str, substr: str=None):
         j += 1
 
     return lst2
+
+
+def versionCmp(v1: str, v2: str):
+    pass
