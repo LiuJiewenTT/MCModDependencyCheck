@@ -20,8 +20,8 @@ class DebugMode:
     #  page or class uses gmode and functions' DebugMode instances inherited from the gmode, stores in self.gmode.
     #  functions use mode
     #
-    #  All mode instances affected by __gmode_default
-    #  Entrance of program uses init function to initialize __gmode_default.
+    #  All mode instances affected by gmode_default
+    #  Entrance of program uses init function to initialize gmode_default.
 
     def __init__(self, mode=DEBUGMODE_NORMAL, gmode=DEBUGMODE_NORMAL):
         global gmode_default

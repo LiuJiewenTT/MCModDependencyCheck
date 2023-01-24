@@ -80,6 +80,9 @@ def main():
 
             # test: to see if that's ok.
             # print_debug(['dependenciesinfo: ', vars(dependenciesinfo[0])], OHEADER, mode.isDebug())
+
+            modinfo.dependenciesinfo = dependenciesinfo
+
         pass
 
 

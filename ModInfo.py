@@ -3,6 +3,7 @@ import strings
 from constants import *
 from DebugMode import *
 from common import print_log, print_debug
+from DependencyInfo import DependencyInfo
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_DEBUG, None)
@@ -14,15 +15,18 @@ class ModInfo:
     authors: str
     description: str
 
+    dependenciesinfo: DependencyInfo
+
     raw: str
     datadict: dict
 
-    def __init__(self, dict_info: dict):
+    def __init__(self, dict_info: dict, dependencies_info = []):
         if isinstance(dict_info, dict) is False:
             print_log(strings.VALUETYPE_ERROR)
             return
         self.datadict = dict_info
         self.resolveDict()
+        self.dependenciesinfo = dependencies_info
 
     def resolveDict(self):
         OHEADER = f'{OHEADER_G}/resolveDict()'

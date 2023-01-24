@@ -52,7 +52,7 @@ class DependencyInfo:
                     if s1 == 'true':
                         self.datadict['mandatory'] = True
                     elif s1 == 'false':
-                        self.mandatory['mandatory'] = False
+                        self.datadict['mandatory'] = False
                     else:
                         print_log([strings.UNEXPECTED_MANDATORY_VALUE + f': {self.datadict["mandatory"]}. '])
                         print_debug([strings.UNEXPECTED_MANDATORY_VALUE + f': {self.datadict["mandatory"]}. '], OHEADER, mode.isDebug())
