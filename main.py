@@ -60,7 +60,8 @@ def main():
 
             if( info['infotype'] == 'mods'):
                 modinfo = ModInfo(info)
-                modinfo.otherInfo = otherInfo
+                modinfo.otherInfo = modinfo.clearValueType(otherInfo)
+                print_debug(['otherInfo', modinfo.otherInfo], OHEADER, mode.isDebug())
                 print_log(strings.CREATE_MODINFO)
             else:
                 print_log([strings.INFO_NOT_MOD, f'infotype: {info["infotype"]}'])

@@ -9,32 +9,42 @@ OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_DEBUG, None)
 
 class ModInfo:
+    # info above [[mods]]
     otherInfo: dict
 
+    # info under [[mods]]
     modId: str
     version: str
     displayName: str
     authors: str
     description: str
 
-    dependenciesinfo: DependencyInfo
-
     raw: str
     datadict: dict
 
-    def __init__(self, dict_info: dict, dependencies_info = []):
+    # info under [[dependencies.*]]
+    dependenciesinfo: list
+
+    def __init__(self, dict_info: dict, dependencies_info = [], otherInfo = {}):
         if isinstance(dict_info, dict) is False:
             print_log(strings.VALUETYPE_ERROR)
             return
         self.datadict = dict_info
         self.resolveDict()
         self.dependenciesinfo = dependencies_info
+        self.otherInfo = otherInfo
 
     def resolveDict(self):
         OHEADER = f'{OHEADER_G}/resolveDict()'
         mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-        self.clearValueType()
+        self.datadict = self.clearValueType()
+        try:
+            self.otherInfo = self.clearValueType(self.otherInfo)
+            print_debug(['otherInfo', self.otherInfo], OHEADER, mode.isDebug())
+        except AttributeError as ae:
+            print_debug(strings.NO_OTHERINFO_NOW + f': [{ae}]', OHEADER, mode.isDebug())
+
         try:
             self.modId = self.datadict['modId']
             self.version = self.datadict['version']
@@ -48,17 +58,22 @@ class ModInfo:
             raise ke
         return
 
-    def clearValueType(self):
+    def clearValueType(self, mdict: dict=None):
         OHEADER = f'{OHEADER_G}/clearValueType()'
         mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-        for key in self.datadict.keys():
+        if mdict is None:
+            mdict = self.datadict
+
+        for key in mdict.keys():
             if key != 'raw':
-                s1 = self.datadict[key].strip('\'" ')
-                if self.datadict[key] != s1:
+                s1 = mdict[key].strip('\'" ')
+                if mdict[key] != s1:
                     # print_debug([f'neq: [key, str, s1]: [{key}, {self.datadict[key]}, {s1}]'], OHEADER, mode.isDebug())
                     # print_debug([f'raw: ', self.datadict['raw']], OHEADER, mode.isDebug())
-                    self.datadict[key] = s1
+                    mdict[key] = s1
                 else:
                     # print_debug([f'eq: [key, str, s1]: [{key}, {self.datadict[key]}, {s1}]'], OHEADER, mode.isDebug())
                     pass
+
+        return mdict

@@ -31,7 +31,10 @@ class DebugMode:
         else:
             self.gmode = gmode
 
-    def isDebug(self):
+    def isDebug(self, opt=None):
+        if opt is not None:
+            return opt
+
         global gmode_default
         flag = False
         if gmode_default > 0:
