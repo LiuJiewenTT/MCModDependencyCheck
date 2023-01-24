@@ -9,6 +9,8 @@ OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_DEBUG, None)
 
 class ModInfo:
+    otherInfo: dict
+
     modId: str
     version: str
     displayName: str

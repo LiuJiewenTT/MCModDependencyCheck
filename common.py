@@ -38,7 +38,6 @@ def isInfoTypeDependency(info: dict):
 
 def getInfo(res: str, start=0, end=None):
     OHEADER = f'{OHEADER_G}/getInfo()'
-    global gmode
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
     if end is None:
@@ -75,8 +74,25 @@ def getInfo(res: str, start=0, end=None):
 
     # dict1['raw'] = raw
 
+    dict1.update(extractPairs(raw))
+
+    # for i in dict1.keys():
+    #     dict1[i] = dict1[i].strip('\r\n')
+
+    print_debug(['dict1: ', [dict1[x] for x in dict1.keys() if x!='raw']], OHEADER, mode.isDebug())
+
+    return dict1
+
+def extractPairs(raw: str, start=0, end=None):
+    OHEADER = f'{OHEADER_G}/extractPairs()'
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+    if end is None:
+        end = raw.__len__()
     # not good for dependencies, good for description
-    i = 0
+    dict1 = {}
+    i = start
+
     while True:
         k = raw.find('=', i, end)
         if k == -1:
@@ -87,12 +103,13 @@ def getInfo(res: str, start=0, end=None):
         left_2 = raw.rfind('\n', i, k) + 1
         # print_debug(['left_1, left_2: ', left_1, left_2], OHEADER, mode.isDebug())
         left_idx = max(left_1, left_2)
-        if left_idx <= 0:   # (-1) + 1 = 0
+        if left_idx <= 0:  # (-1) + 1 = 0
             # print_log()
             # raise IndexError()
             left_idx = i
             # print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
-            print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[i, k, str]: [{i}, {k}] .', raw[i:k]], OHEADER, mode.isDebug())
+            print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[i, k, str]: [{i}, {k}] .', raw[i:k]], OHEADER,
+                        mode.isDebug())
 
         left_str = raw[left_idx: k]
         # print_debug(['left_str, left_idx, k: ', left_str, left_idx, k], OHEADER, mode.isDebug())
@@ -125,14 +142,8 @@ def getInfo(res: str, start=0, end=None):
         i = right_idx
         print_debug(['i: ', i], OHEADER, mode.isDebug())
 
-    # for i in dict1.keys():
-    #     dict1[i] = dict1[i].strip('\r\n')
-
-    print_debug(['dict1: ', dict1], OHEADER, mode.isDebug())
     dict1['raw'] = raw
-
     return dict1
-
 
 def getParts(res: str, substr: str=None):
     OHEADER = f'{OHEADER_G}/getParts()'

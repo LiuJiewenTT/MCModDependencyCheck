@@ -51,12 +51,16 @@ def main():
 
             print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 
+            i = content_str.find('[[')
+            otherInfo: dict = extractPairs(content_str, 0, i)
+
             # This is good.
             info = getInfo(content_str)
             print_debug(['info: ', info], OHEADER, mode.isDebug())
 
             if( info['infotype'] == 'mods'):
                 modinfo = ModInfo(info)
+                modinfo.otherInfo = otherInfo
                 print_log(strings.CREATE_MODINFO)
             else:
                 print_log([strings.INFO_NOT_MOD, f'infotype: {info["infotype"]}'])
