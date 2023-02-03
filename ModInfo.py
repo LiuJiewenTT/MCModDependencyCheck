@@ -3,12 +3,13 @@ import strings
 from constants import *
 from DebugMode import *
 from common import print_log, print_debug
+from Info import Info
 from DependencyInfo import DependencyInfo
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_DEBUG, None)
 
-class ModInfo:
+class ModInfo(Info):
     # info above [[mods]]
     otherInfo: dict
 
@@ -30,7 +31,6 @@ class ModInfo:
             print_log(strings.VALUETYPE_ERROR)
             return
         self.datadict = dict_info
-        self.resolveDict()
         self.dependenciesinfo = dependencies_info
         self.otherInfo = otherInfo
 
@@ -38,24 +38,26 @@ class ModInfo:
         OHEADER = f'{OHEADER_G}/resolveDict()'
         mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-        self.datadict = self.clearValueType()
         try:
             self.otherInfo = self.clearValueType(self.otherInfo)
             print_debug(['otherInfo', self.otherInfo], OHEADER, mode.isDebug())
         except AttributeError as ae:
             print_debug(strings.NO_OTHERINFO_NOW + f': [{ae}]', OHEADER, mode.isDebug())
 
+        self.datadict = self.clearValueType()
+
         try:
+            self.raw = self.datadict['raw']
+
             self.modId = self.datadict['modId']
             self.version = self.datadict['version']
             self.displayName = self.datadict['displayName']
             self.authors = self.datadict['authors']
             self.description = self.datadict['description']
-
-            self.raw = self.datadict['raw']
         except KeyError as ke:
             print_debug([f'KeyError: {ke}. Keys: ', self.datadict.keys()], OHEADER, mode.isDebug())
             raise ke
+
         return
 
     def clearValueType(self, mdict: dict=None):

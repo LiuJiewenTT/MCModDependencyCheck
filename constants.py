@@ -3,7 +3,7 @@ import os.path as osp
 LOGMODE_LOG_OHEADER = '[Log]: '
 LOGMODE_DEBUG_OHEADER = '[Debug]: '
 LOGMODE_LOADING_OHEADER = '[ProgramLoad]: '
-target_path = 'META-INF/mods.toml'
+# target_path = 'META-INF/mods.toml'
 
 RETV_ERROR = -1
 

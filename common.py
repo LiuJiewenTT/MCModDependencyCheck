@@ -83,7 +83,7 @@ def getInfo(res: str, start=0, end=None):
 
     return dict1
 
-def extractPairs(raw: str, start=0, end=None):
+def extractPairs(raw: str, start=0, end=None, identifier:str='='):
     OHEADER = f'{OHEADER_G}/extractPairs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
@@ -94,7 +94,7 @@ def extractPairs(raw: str, start=0, end=None):
     i = start
 
     while True:
-        k = raw.find('=', i, end)
+        k = raw.find(identifier, i, end)
         if k == -1:
             print_log(strings.NO_MORE_ITEM)
             break

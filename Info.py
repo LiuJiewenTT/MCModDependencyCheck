@@ -3,20 +3,12 @@ import strings
 from constants import *
 from DebugMode import *
 from common import print_log, print_debug
-from Info import Info
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
-gmode = DebugMode(DEBUGMODE_GDEBUG, None)
+gmode = DebugMode(DEBUGMODE_DEBUG, None)
 
-class DependencyInfo(Info):
-    modId: str
-    versionRange: str
-    ordering: str
-    side: str
-    mandatory: bool
-
+class Info:
     raw: str
-    datadict: dict
 
     def __init__(self, dict_info: dict):
         if isinstance(dict_info, dict) is False:
@@ -33,16 +25,9 @@ class DependencyInfo(Info):
 
         try:
             self.raw = self.datadict['raw']
-
-            self.modId = self.datadict['modId']
-            self.versionRange = self.datadict['versionRange']
-            self.ordering = self.datadict['ordering']
-            self.side = self.datadict['side']
-            self.mandatory = self.datadict['mandatory']
         except KeyError as ke:
             print_debug([f'KeyError: {ke}. Keys: ', self.datadict.keys()], OHEADER, mode.isDebug())
             raise ke
-
         return
 
     def clearValueType(self, mdict: dict=None):
@@ -54,18 +39,19 @@ class DependencyInfo(Info):
 
         for key in mdict.keys():
             if key != 'raw':
-                s1 = mdict[key].strip('\'" ')
+                idx = mdict[key].find('#')
+                if idx != -1:
+                    s1 = mdict[key][:idx]
+                else:
+                    s1 = mdict[key]
+                print_debug(s1, OHEADER, mode.isDebug())
+                s1 = s1.strip('\'" ')
                 if mdict[key] != s1:
+                    print_debug([f'neq: [key, str, s1]: [{key}, {mdict[key]}, {s1}]'], OHEADER, mode.isDebug())
+                    # print_debug([f'raw: ', self.datadict['raw']], OHEADER, mode.isDebug())
                     mdict[key] = s1
-                # s1 = mdict[key]
-                if key == 'mandatory':
-                    if s1 == 'true':
-                        mdict['mandatory'] = True
-                    elif s1 == 'false':
-                        mdict['mandatory'] = False
-                    else:
-                        print_log([strings.UNEXPECTED_MANDATORY_VALUE + f': {mdict["mandatory"]}. '])
-                        print_debug([strings.UNEXPECTED_MANDATORY_VALUE + f': {mdict["mandatory"]}. '], OHEADER, mode.isDebug())
-                    print_debug(['mandatory', mdict['mandatory']], OHEADER, mode.isDebug())
+                else:
+                    # print_debug([f'eq: [key, str, s1]: [{key}, {self.datadict[key]}, {s1}]'], OHEADER, mode.isDebug())
+                    pass
 
         return mdict
