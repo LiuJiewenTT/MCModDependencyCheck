@@ -82,10 +82,10 @@ class Mod:
 
                 print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 
-                # locate [[mods]]
-                i = content_str.find('[[')
                 # get otherinfo
                 print_log(strings.WORKING_ON_OTHERINFO)
+                # locate [[mods]]
+                i = content_str.find('[[')
                 otherInfo: dict = common.extractPairs(content_str, 0, i)
                 # print_debug(['otherinfo: ', otherInfo], OHEADER, mode.isDebug())
 

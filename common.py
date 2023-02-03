@@ -37,6 +37,10 @@ def isInfoTypeDependency(info: dict):
     return False
 
 def getInfo(res: str, start=0, end=None):
+    # This function cannot be included by class Info, because the constructor's input is the output of this function.
+    # And the sub-classes will need to change constructors to receive data from Info's instances.
+    # And this method is specific to mods.toml, which will limit the usage of Info class if being included in.
+    
     OHEADER = f'{OHEADER_G}/getInfo()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 

@@ -8,6 +8,8 @@ OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 class Info:
+    # This class is rather useless and is more of an example for beginners.
+
     raw: str
 
     def __init__(self, dict_info: dict):
