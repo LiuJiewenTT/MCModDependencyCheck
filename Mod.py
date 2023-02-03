@@ -61,16 +61,17 @@ class Mod:
     def readinfo(self):
         self.readinfo1()
         if self.modinfo.version != VERSION_REDIRECTED_SIGN:
+            self.getCorrectVersion()
             return
         # Version is redirected.
         print_log(strings.VERSION_REDIRECTED)
         self.readinfo2()
+        print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
+        self.getCorrectVersion()
 
     def readinfo1(self):
-        OHEADER = f'{OHEADER_G}/readinfo()'
+        OHEADER = f'{OHEADER_G}/readinfo1()'
         mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
-
-        # self.filepath = os.path.join(self.filedir, self.filename)
 
         # open zip and read
         with zipfile.ZipFile(self.filepath, mode='r') as file_zip:
@@ -140,8 +141,56 @@ class Mod:
 
             # work is done, assign modinfo to self.modinfo
             self.modinfo = modinfo
-            print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
+            print_log(strings.MOD_READINFO_DONE_1 + f'mod: [{self.modinfo.getModName()}]')
         return
 
     def readinfo2(self):
+        OHEADER = f'{OHEADER_G}/readinfo2()'
+        mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+        # open zip and read
+        with zipfile.ZipFile(self.filepath, mode='r') as file_zip:
+            path_target = zipfile.Path(file_zip, at=self.target2_path)
+            if (path_target.exists()):
+                print_log(strings.TARGET_FOUNDED + f'target: [{self.target2_path}].')
+            else:
+                return [RETV_ERROR, strings.ERROR_FILE_NOT_FOUND + self.target2_path]
+
+            # open target file to read info
+            with path_target.open(mode='r') as file_target:
+                # read
+                content_bytes = file_target.read()
+                # content_str = str(content_bytes)
+                content_str = content_bytes.decode()
+
+                print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
+
+                info = common.extractPairs(content_str, identifier=':')
+                print_debug(['.MF, info: ', info], OHEADER, mode.isDebug())
+
+                self.modinfo.version = info['Implementation-Version']
+
+        print_log(strings.MOD_READINFO_DONE_2 + f'mod: [{self.modinfo.getModName()}]')
+        pass
+
+
+
+    def getCorrectVersion(self):
+        OHEADER = f'{OHEADER_G}/getCorrectVersion()'
+        mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+        version = self.modinfo.version
+        print_log(strings.CURRENT_VERSION_VALUE + version)
+        # Check if there are multiple versions
+        a = version.find('-')
+        # NO, it's single
+        if a == -1:
+            return
+        # YES, it's multiple
+        # Going to load rules and match
+
+        pass
+
+        # Finish.
+        print_log(strings.CORRECTED_VERSION_VALUE + version)
         pass

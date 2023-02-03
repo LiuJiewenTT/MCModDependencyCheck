@@ -26,6 +26,9 @@ class ModInfo(Info):
     # info under [[dependencies.*]]
     dependenciesinfo: list
 
+    # more
+    correctVersion: str
+
     def __init__(self, dict_info: dict, dependencies_info = [], otherInfo = {}):
         if isinstance(dict_info, dict) is False:
             print_log(strings.VALUETYPE_ERROR)
