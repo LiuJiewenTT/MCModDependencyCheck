@@ -10,7 +10,8 @@ RETV_ERROR = -1
 basedir: str
 
 try:
-    assert basedir is not None
+    # anything that has variable 'basedir' is ok, except assignment sentence.
+    if basedir is None: pass;
 except Exception as e:
     # print(e)
     basedir = osp.dirname(__file__)

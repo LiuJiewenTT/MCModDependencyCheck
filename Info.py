@@ -5,7 +5,7 @@ from DebugMode import *
 from common import print_log, print_debug
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
-gmode = DebugMode(DEBUGMODE_DEBUG, None)
+gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 class Info:
     raw: str

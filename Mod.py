@@ -11,7 +11,7 @@ from common import print_log, print_debug
 from DebugMode import *
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
-gmode = DebugMode(DEBUGMODE_DEBUG, None)
+gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 class Mod:
     filename: str

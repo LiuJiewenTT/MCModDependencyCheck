@@ -7,7 +7,7 @@ from Info import Info
 from DependencyInfo import DependencyInfo
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
-gmode = DebugMode(DEBUGMODE_DEBUG, None)
+gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 class ModInfo(Info):
     # info above [[mods]]
