@@ -7,9 +7,9 @@ See `working.md`.
 
 ## Words to say
 
-Some mods are unbearable on version indications. They use `version="${file.jarVersion}"` sentence and it confused me how to compare between versions. I don't know if they never want some else develop a mod based on theirs. It's a catastrophe!
+2023-1-24:
 
-Even I may ignore this or design more codes and structures, this awful case makes me very very uncomfortable. The workload will increase a big amount. OMG. I'm gonna rest for a while now.
+Some mods are unbearable on version indications. They use `version="${file.jarVersion}"` sentence and the version is not simple format as we thought. Instead, the version string is consist of something else.
 
 If some one can't wait and want to continue the project, here is a piece of advise for you:
 
@@ -17,3 +17,8 @@ If some one can't wait and want to continue the project, here is a piece of advi
 2. Or you might ignore the case and let user judge. In this solution, you may let the program remember user's judgement. This solution costs much lesser than the above.
 
 Good luck!
+
+2023-2-3:
+
+I will go on my work.
+
