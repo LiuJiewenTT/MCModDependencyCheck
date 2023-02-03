@@ -97,6 +97,7 @@ class Mod:
                 if (info['infotype'] == 'mods'):
                     modinfo = ModInfo(info, otherInfo=otherInfo)
                     # modinfo.otherInfo = modinfo.clearValueType(otherInfo)
+                    print_debug(f'modinfo.modId: {modinfo.modId}', OHEADER, mode.isDebug())
                     print_debug(['otherInfo', modinfo.otherInfo], OHEADER, mode.isDebug())
                     print_log(strings.CREATE_MODINFO)
                 else:
@@ -129,5 +130,10 @@ class Mod:
                 # print_debug(['dependenciesinfo: ', vars(dependenciesinfo[0])], OHEADER, mode.isDebug())
 
                 modinfo.dependenciesinfo = dependenciesinfo
+
+            # work is done, assign modinfo to self.modinfo
+            self.modinfo = modinfo
+
+            print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
 
             pass

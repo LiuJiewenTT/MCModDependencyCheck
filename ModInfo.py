@@ -33,6 +33,7 @@ class ModInfo(Info):
         self.datadict = dict_info
         self.dependenciesinfo = dependencies_info
         self.otherInfo = otherInfo
+        self.resolveDict()
 
     def resolveDict(self):
         OHEADER = f'{OHEADER_G}/resolveDict()'
@@ -79,3 +80,12 @@ class ModInfo(Info):
                     pass
 
         return mdict
+
+    def getModName(self, strict=False):
+        retv = None
+        try:
+            retv = self.displayName
+        except Exception as e:
+            if strict == False:
+                retv = self.modId
+        return retv
