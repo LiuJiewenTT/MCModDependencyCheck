@@ -27,3 +27,4 @@ except Exception as e:
 #     print(PROJDIR)
 
 PART_LOCATOR = '[[dependencies.'
+VERSION_REDIRECTED_SIGN = '${file.jarVersion}'

@@ -26,21 +26,20 @@ def main():
 
     filedir = 'testres/'
     filelist = os.listdir(filedir)
-
     # print(filelist)
+
+    # temp
+    # filelist = ['mcvine_wat_1.18.2_0.1.2.jar']
+    filelist = ['createdeco-1.2.9-1.18.2.jar']
 
     for filename in filelist:
         # do something
+        path_zip = os.path.join(filedir, filename)
+        print_log(strings.CURRENT_FILE_PREFIX + '[' + str(path_zip) + ']')
+        mod = Mod(filename=filename, filedir=filedir)
+        mod.readinfo()
+
         pass
-
-    # temp filename
-    filename = 'mcvine_wat_1.18.2_0.1.2.jar'
-    path_zip = os.path.join(filedir, filename)
-
-    print_log(strings.CURRENT_FILE_PREFIX + '[' + str(path_zip) + ']')
-
-    mod = Mod(filename=filename, filedir=filedir)
-    mod.readinfo()
 
 
 

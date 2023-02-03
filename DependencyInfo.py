@@ -54,7 +54,12 @@ class DependencyInfo(Info):
 
         for key in mdict.keys():
             if key != 'raw':
-                s1 = mdict[key].strip('\'" ')
+                idx = mdict[key].find('#')
+                if idx != -1:
+                    s1 = mdict[key][:idx]
+                else:
+                    s1 = mdict[key]
+                s1 = s1.strip('\'" ')
                 if mdict[key] != s1:
                     mdict[key] = s1
                 # s1 = mdict[key]

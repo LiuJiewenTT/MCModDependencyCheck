@@ -1,4 +1,3 @@
-# I'm not going to use this now.
 import zipfile
 import os
 
@@ -24,7 +23,7 @@ class Mod:
     modinfo: ModInfo
 
     # for possible future development
-    IMG_LOGO: list
+    IMG_LOGO: list  # e.g.: np.narray
 
 
     def __init__(self, filepath: str=None, filedir: str=None, filename: str=None):
@@ -60,6 +59,14 @@ class Mod:
         pass
 
     def readinfo(self):
+        self.readinfo1()
+        if self.modinfo.version != VERSION_REDIRECTED_SIGN:
+            return
+        # Version is redirected.
+        print_log(strings.VERSION_REDIRECTED)
+        self.readinfo2()
+
+    def readinfo1(self):
         OHEADER = f'{OHEADER_G}/readinfo()'
         mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
@@ -133,7 +140,8 @@ class Mod:
 
             # work is done, assign modinfo to self.modinfo
             self.modinfo = modinfo
-
             print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
+        return
 
-            pass
+    def readinfo2(self):
+        pass
