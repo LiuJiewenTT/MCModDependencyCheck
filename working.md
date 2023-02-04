@@ -9,6 +9,8 @@ Here is the things during my work.
 - [x] Implement reading information from file
 - [x] Implement collecting and sorting information and form a structure of information for further uses.
 - [ ] Implement Dependencies Checks, including `modId`, `versionRange` and `mandatory` attributes.
+  - [ ] check `modId` and `mandatory`
+  - [ ] check `versionRange`
 - [ ] *more in the future*.
 
 

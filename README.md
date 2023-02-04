@@ -22,3 +22,6 @@ Good luck!
 
 I will go on my work.
 
+2023-2-4:
+
+I have prepared version-comparing method. The next work is to do with `modId` and then is to do with `versionRange`.
