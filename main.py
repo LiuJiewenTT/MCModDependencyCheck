@@ -24,6 +24,8 @@ def main():
     global gmode
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
+    about_print()
+
     filedir = 'testres/'
     filelist = os.listdir(filedir)
     # print(filelist)
@@ -41,7 +43,17 @@ def main():
 
         pass
 
-
+def about_print():
+    print(strings.ABOUT_TITLE)
+    print(APP_NAME_DISPLAY + f' ({APP_NAME_ABBR})')
+    print(strings.ABOUT_PROJECT + ': ' + APP_NAME)
+    print(strings.ABOUT_LICENSE + ': ' + LICENSE)
+    print(strings.ABOUT_AUTHORS + ': ', end='')
+    for i in AUTHORS:
+        print(i, end='; ')
+    print('')
+    print(strings.ABOUT_PROJECTLINK + ': ' + PROJECT_LINK)
+    return
 
 if __name__ == "__main__":
     main()

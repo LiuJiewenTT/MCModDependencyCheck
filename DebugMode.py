@@ -1,3 +1,10 @@
+## How to setup before using:
+# import DebugMode
+# DebugMode.initDefault_gmode(DebugMode.DEBUGMODE_GDEBUG)
+## The command must be applied to every page:
+# from DebugMode import *
+## then is your codes...
+
 
 DEBUGMODE_NORMAL = 0
 DEBUGMODE_DEBUG = 1

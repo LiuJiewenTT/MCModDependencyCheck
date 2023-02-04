@@ -1,5 +1,12 @@
 import os.path as osp
 
+APP_NAME = 'MCModDependencyCheck'
+APP_NAME_DISPLAY = 'MC Mod Dependency Check'
+APP_NAME_ABBR = 'MCMDC'
+AUTHORS = ['LiuJiewenTT']
+PROJECT_LINK = 'https://github.com/LiuJiewenTT/MCModDependencyCheck'
+LICENSE = 'GPL-3.0'
+
 LOGMODE_LOG_OHEADER = '[Log]: '
 LOGMODE_DEBUG_OHEADER = '[Debug]: '
 LOGMODE_LOADING_OHEADER = '[ProgramLoad]: '

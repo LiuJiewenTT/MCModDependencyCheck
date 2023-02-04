@@ -1,4 +1,13 @@
 import constants
+
+# About section
+ABOUT_TITLE = 'About Software'
+ABOUT_PROJECT = 'Project'
+ABOUT_AUTHORS = 'Authors'
+ABOUT_PROJECTLINK = 'Project Link'
+ABOUT_LICENSE = 'License'
+
+# other
 CURRENT_FILE_PREFIX = 'Current file: '
 TARGET_FOUNDED = f'Target file exists. '
 ERROR_FILE_NOT_FOUND = 'ERROR! File not found. '
@@ -28,3 +37,4 @@ MOD_READINFO_DONE_2 = 'This mod\'s info has been read(part2). Done. '
 VERSION_REDIRECTED = 'Version string is redirected. '
 CURRENT_VERSION_VALUE = 'Current value of version: '
 CORRECTED_VERSION_VALUE = 'Corrected value of version: '
+WRONG_EDGESIGN_OF_INTERVAL = 'The interval\'s edge has wrong sign. '
