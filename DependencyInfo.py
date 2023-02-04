@@ -4,6 +4,7 @@ from constants import *
 from DebugMode import *
 from common import print_log, print_debug
 from Info import Info
+from Interval import Interval
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
@@ -17,6 +18,8 @@ class DependencyInfo(Info):
 
     raw: str
     datadict: dict
+
+    versionRange_Interval: Interval
 
     def __init__(self, dict_info: dict):
         if isinstance(dict_info, dict) is False:
@@ -74,3 +77,14 @@ class DependencyInfo(Info):
                     print_debug(['mandatory', mdict['mandatory']], OHEADER, mode.isDebug())
 
         return mdict
+
+    def initInterval(self):
+        OHEADER = f'{OHEADER_G}/initInterval()'
+        mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+        if self.versionRange is None:
+            print_log(strings.EMPTY_VERSIONRANGE)
+            print_debug(strings.EMPTY_VERSIONRANGE, OHEADER, mode.isDebug())
+            raise RuntimeError(strings.EMPTY_VERSIONRANGE)
+            return
+        self.versionRange_Interval = Interval(self.versionRange)
