@@ -1,3 +1,4 @@
+import sys
 import zipfile
 import os
 
@@ -21,15 +22,18 @@ gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 toIgnore: bool
 IgnoreList: list
 
-def main():
+def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
 
     global gmode
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
+    # print_debug([toIgnore, IgnoreList], OHEADER, mode.isDebug())
+
     about_print()
 
-    filedir = 'testres/'
+    if filedir is None:
+        filedir = 'testres/'
 
     # print(filelist)
 
@@ -96,18 +100,75 @@ def checkModIds(mods: list):
         mod: Mod
         flag = False
         for dependencyinfo in mod.modinfo.dependenciesinfo:
-            if dependencyinfo.modId not in modIds and \
-                    dependencyinfo.modId not in IgnoreList:
-                modIds_lack_of.append(dependencyinfo.modId)
+            if dependencyinfo.modId not in modIds:
+                if toIgnore is True:
+                    if dependencyinfo.modId not in IgnoreList:
+                        if dependencyinfo.modId not in modIds_lack_of:
+                            modIds_lack_of.append(dependencyinfo.modId)
+                else:
+                    if dependencyinfo.modId not in modIds_lack_of:
+                        modIds_lack_of.append(dependencyinfo.modId)
                 flag = True
         if flag is True:
             mods_insufficient.append(mod)
 
     return [mods_insufficient, modIds_lack_of]
 
-if __name__ == "__main__":
-    # 忽略默认
-    toIgnore = True
-    IgnoreList = ['forge', 'minecraft']
+def processArgs(argv: list):
+    # Manual
+    # -toIgnore [true/false] -dir ["testres/"]
 
-    main()
+    OHEADER = f'{OHEADER_G}/processArgs()'
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+    print_debug(['Args: ', argv], OHEADER, mode.isDebug())
+
+    argc = argv.__len__()
+    retv = {}
+
+    # 默认设置
+    # 忽略默认
+    retv['toIgnore'] = True
+    retv['IgnoreList'] = ['forge', 'minecraft']
+    retv['dir'] = 'testres/'
+
+    try:
+        for i in range(0, argc):
+            if argv[i] == '-toIgnore':
+                if argv[i+1].lower() == 'false':
+                    retv['toIgnore'] = False
+            elif argv[i] == '-IgnoreList':
+                s: str = argv[i+1].strip(' ')
+                s = s[1:-1]
+                l = s.split(sep=',')
+                l = [x.strip('"\' ') for x in l]
+                retv['IgnoreList'] = l
+            elif argv[i] == '-dir':
+                retv['dir'] = argv[i+1].strip('" ')
+    except Exception as e:
+        print(f'{LOGMODE_LOADING_OHEADER}', end='')
+        print(e)
+    return retv
+
+def applyArgs(args: dict):
+    OHEADER = f'{OHEADER_G}/processArgs()'
+    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
+
+    global toIgnore, IgnoreList
+    toIgnore = args.get('toIgnore')
+    IgnoreList = args.get('IgnoreList')
+    return
+
+if __name__ == "__main__":
+
+    args: dict = processArgs(sys.argv)
+    applyArgs(args)
+    filedir = args.get('dir')
+
+    # 忽略默认
+    # toIgnore = True
+    # IgnoreList = ['forge', 'minecraft']
+
+    main(filedir)
+
+
