@@ -1,7 +1,7 @@
 import os.path as osp
 
 APP_NAME = 'MCModDependencyCheck'
-APP_NAME_DISPLAY = 'MC Mod Dependency Check'
+APP_NAME_DISPLAY = 'Minecraft Mod Dependency Check'
 APP_NAME_ABBR = 'MCMDC'
 AUTHORS = ['LiuJiewenTT']
 PROJECT_LINK = 'https://github.com/LiuJiewenTT/MCModDependencyCheck'
