@@ -38,6 +38,9 @@ def main(filedir: str=None):
     # print(filelist)
 
     mods = readmods_dir(filedir)
+    if mods == []:
+        return
+
     mods_insufficient, modIds_lack_of = checkModIds(mods)
     modIds_insufficient = [x.modinfo.modId for x in mods_insufficient]
 
@@ -62,11 +65,26 @@ def about_print():
 
 def readmods_dir(filedir: str):
     # read mods from directory
-    filelist = os.listdir(filedir)
+    OHEADER = f'{OHEADER_G}/readmods_dir()'
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+
+    filelist_temp = os.listdir(filedir)
+
+    filelist = []
+    for file in filelist_temp:
+        if os.path.isfile(os.path.join(filedir, file)):
+            filelist.append(file)
+
+    # print_debug(['filelist: ', filelist, filelist_temp], OHEADER, mode.isDebug())
 
     # temp
     # filelist = ['mcvine_wat_1.18.2_0.1.2.jar']
     # filelist = ['createdeco-1.2.9-1.18.2.jar']
+
+    if filelist == []:
+        print_log(strings.EMPTY_FILELIST)
+        print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER, mode.isDebug())
+        return []
 
     mods = readmods( filelist, filedir)
     return mods
@@ -132,6 +150,7 @@ def processArgs(argv: list):
     retv['IgnoreList'] = ['forge', 'minecraft']
     retv['dir'] = 'testres/'
 
+    flag = True
     try:
         for i in range(0, argc):
             if argv[i] == '-toIgnore':
@@ -145,14 +164,21 @@ def processArgs(argv: list):
                 retv['IgnoreList'] = l
             elif argv[i] == '-dir':
                 retv['dir'] = argv[i+1].strip('" ')
+            else:
+                flag = False
     except Exception as e:
         print(f'{LOGMODE_LOADING_OHEADER}', end='')
         print(e)
+    if flag is False:
+        if argc == 2:
+            s: str = argv[-1].strip('"\' ')
+            if os.path.isdir(s) is True:
+                retv['dir'] = argv[-1]
     return retv
 
 def applyArgs(args: dict):
     OHEADER = f'{OHEADER_G}/processArgs()'
-    mode = DebugMode(DEBUGMODE_DEBUG, gmode.mode)
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
     global toIgnore, IgnoreList
     toIgnore = args.get('toIgnore')
