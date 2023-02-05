@@ -18,6 +18,9 @@ OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
+toIgnore: bool
+IgnoreList: list
+
 def main():
     OHEADER = f'{OHEADER_G}/main()'
 
@@ -27,21 +30,18 @@ def main():
     about_print()
 
     filedir = 'testres/'
-    filelist = os.listdir(filedir)
+
     # print(filelist)
 
-    # temp
-    # filelist = ['mcvine_wat_1.18.2_0.1.2.jar']
-    filelist = ['createdeco-1.2.9-1.18.2.jar']
+    mods = readmods_dir(filedir)
+    mods_insufficient, modIds_lack_of = checkModIds(mods)
+    modIds_insufficient = [x.modinfo.modId for x in mods_insufficient]
 
-    for filename in filelist:
-        # do something
-        path_zip = os.path.join(filedir, filename)
-        print_log(strings.CURRENT_FILE_PREFIX + '[' + str(path_zip) + ']')
-        mod = Mod(filename=filename, filedir=filedir)
-        mod.readinfo()
-
-        pass
+    if modIds_lack_of == []:
+        print_log(strings.MODPACK_READY)
+    else:
+        print_log([strings.MODS_INSUFFICIENT, modIds_insufficient])
+        print_log([strings.MODS_LACK_OF, modIds_lack_of])
 
 def about_print():
     print(strings.ABOUT_TITLE)
@@ -55,5 +55,58 @@ def about_print():
     print(strings.ABOUT_PROJECTLINK + ': ' + PROJECT_LINK)
     return
 
+def readmods_dir(filedir: str):
+    # read mods from directory
+    filelist = os.listdir(filedir)
+
+    # temp
+    # filelist = ['mcvine_wat_1.18.2_0.1.2.jar']
+    # filelist = ['createdeco-1.2.9-1.18.2.jar']
+
+    mods = readmods( filelist, filedir)
+    return mods
+
+def readmods(filelist: list, filedir: str=None):
+    # read mods from list
+    mods = []
+    for filename in filelist:
+        # do something
+        if filedir is None:
+            path_zip = filename
+        else:
+            path_zip = os.path.join(filedir, filename)
+        print_log(strings.CURRENT_FILE_PREFIX + '[' + str(path_zip) + ']')
+        mod = Mod(filename=filename, filedir=filedir)
+        mod.readinfo()
+        mods.append(mod)
+    return mods
+
+def checkModIds(mods: list):
+    # check modId
+    modIds = []
+    mods_insufficient = []
+    modIds_lack_of = []
+
+    for mod in mods:
+        mod: Mod
+        modIds.append(mod.modinfo.modId)
+
+    for mod in mods:
+        mod: Mod
+        flag = False
+        for dependencyinfo in mod.modinfo.dependenciesinfo:
+            if dependencyinfo.modId not in modIds and \
+                    dependencyinfo.modId not in IgnoreList:
+                modIds_lack_of.append(dependencyinfo.modId)
+                flag = True
+        if flag is True:
+            mods_insufficient.append(mod)
+
+    return [mods_insufficient, modIds_lack_of]
+
 if __name__ == "__main__":
+    # 忽略默认
+    toIgnore = True
+    IgnoreList = ['forge', 'minecraft']
+
     main()
