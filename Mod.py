@@ -6,6 +6,7 @@ import strings
 from constants import *
 from ModInfo import ModInfo
 from DependencyInfo import DependencyInfo
+from Version import Version
 from common import print_log, print_debug
 from DebugMode import *
 
@@ -61,13 +62,13 @@ class Mod:
     def readinfo(self):
         self.readinfo1()
         if self.modinfo.version != VERSION_REDIRECTED_SIGN:
-            self.getCorrectVersion()
+            self.resolveVersion()
             return
         # Version is redirected.
         print_log(strings.VERSION_REDIRECTED)
         self.readinfo2()
         print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
-        self.getCorrectVersion()
+        self.resolveVersion()
 
     def readinfo1(self):
         OHEADER = f'{OHEADER_G}/readinfo1()'
@@ -175,8 +176,8 @@ class Mod:
 
 
 
-    def getCorrectVersion(self):
-        OHEADER = f'{OHEADER_G}/getCorrectVersion()'
+    def resolveVersion(self):
+        OHEADER = f'{OHEADER_G}/resolveVersion()'
         mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
         version = self.modinfo.version
@@ -185,10 +186,11 @@ class Mod:
         a = version.find('-')
         # NO, it's single
         if a == -1:
+            self.modinfo.version_Version = Version(self.modinfo.version)
             return
         # YES, it's multiple
         # Going to load rules and match
-
+        print_log('version check is not online.')
         pass
 
         # Finish.

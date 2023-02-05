@@ -4,6 +4,7 @@ from common import print_log, print_debug
 import strings
 from constants import *
 from DebugMode import *
+from Version import Version
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
@@ -41,9 +42,11 @@ class Interval:
             if self.interval[1] == self.INF:
                 retv = True
             elif sign == '[':
-                retv = (self.interval[1] <= arg)
+                # retv = (self.interval[1] <= arg)
+                retv = (Version.versionCompare(self.interval[1], arg) != Version.VER_DECREASING)
             elif sign == '(':
-                retv = (self.interval[1] < arg)
+                # retv = (self.interval[1] < arg)
+                retv = (Version.versionCompare(self.interval[1], arg) == Version.VER_INCREASING)
             else:
                 print_log(strings.WRONG_EDGESIGN_OF_INTERVAL)
                 print_debug([strings.WRONG_EDGESIGN_OF_INTERVAL, sign], OHEADER, mode.isDebug())
@@ -65,9 +68,11 @@ class Interval:
             if self.interval[2] == self.INF:
                 retv = True
             elif sign == ']':
-                retv = (self.interval[2] >= arg)
+                # retv = (self.interval[2] >= arg)
+                retv = (Version.versionCompare(self.interval[2], arg) != Version.VER_INCREASING)
             elif sign == ')':
-                retv = (self.interval[2] > arg)
+                # retv = (self.interval[2] > arg)
+                retv = (Version.versionCompare(self.interval[2], arg) == Version.VER_DECREASING)
             else:
                 print_log(strings.WRONG_EDGESIGN_OF_INTERVAL)
                 print_debug([strings.WRONG_EDGESIGN_OF_INTERVAL, sign], OHEADER, mode.isDebug())

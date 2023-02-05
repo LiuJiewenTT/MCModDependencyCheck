@@ -5,6 +5,7 @@ from DebugMode import *
 from common import print_log, print_debug
 from Info import Info
 from DependencyInfo import DependencyInfo
+from Version import Version
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
@@ -28,6 +29,7 @@ class ModInfo(Info):
 
     # more
     correctVersion: str
+    version_Version: Version
 
     def __init__(self, dict_info: dict, dependencies_info = [], otherInfo = {}):
         if isinstance(dict_info, dict) is False:
