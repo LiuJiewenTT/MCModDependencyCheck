@@ -6,6 +6,7 @@ ABOUT_PROJECT = 'Project'
 ABOUT_AUTHORS = 'Authors'
 ABOUT_PROJECTLINK = 'Project Link'
 ABOUT_LICENSE = 'License'
+ABOUT_VERSION = 'Version'
 
 # other
 CURRENT_FILE_PREFIX = 'Current file: '

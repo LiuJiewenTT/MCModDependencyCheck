@@ -46,12 +46,13 @@ def main():
 def about_print():
     print(strings.ABOUT_TITLE)
     print(APP_NAME_DISPLAY + f' ({APP_NAME_ABBR})')
-    print(strings.ABOUT_PROJECT + ': ' + APP_NAME)
-    print(strings.ABOUT_LICENSE + ': ' + LICENSE)
+    print(strings.ABOUT_VERSION + f': v{APP_VERSION}')
     print(strings.ABOUT_AUTHORS + ': ', end='')
     for i in AUTHORS:
         print(i, end='; ')
     print('')
+    print(strings.ABOUT_PROJECT + ': ' + APP_NAME)
+    print(strings.ABOUT_LICENSE + ': ' + LICENSE)
     print(strings.ABOUT_PROJECTLINK + ': ' + PROJECT_LINK)
     return
 
