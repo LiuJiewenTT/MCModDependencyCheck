@@ -25,6 +25,8 @@ class Interval:
             s1 = s1.replace(' ', '')
             t1 = s1.split(sep=',')
             t1 = [x if x != '' else Interval.INF for x in t1]
+            if t1.__len__() == 1:
+                t1.append(t1[0])
             self.interval = [arg[0], t1[0], t1[1], arg[-1]]
         print_debug(self.interval, OHEADER, mode.isDebug())
 

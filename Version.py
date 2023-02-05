@@ -35,8 +35,16 @@ class Version:
                 pass
             elif len_min == len1:
                 # a < b
-                flag = 1
+                flag2 = 0
+                for i in range(len1, len2):
+                    if eval(l2[i]) != 0:
+                        flag2 = 1
+                flag = flag2
             else:
                 # a > b
-                flag = -1
+                flag2 = 0
+                for i in range(len2, len1):
+                    if eval(l1[i]) != 0:
+                        flag2 = -1
+                flag = flag2
         return flag
