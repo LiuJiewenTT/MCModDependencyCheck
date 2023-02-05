@@ -5,6 +5,8 @@ Check if all dependencies are good to go before launching a game. (for forge)
 
 See `working.md`.
 
+**<mark>Will anybody help me design an icon?</mark>** **pls!**
+
 ## Words to say
 
 2023-1-24:
