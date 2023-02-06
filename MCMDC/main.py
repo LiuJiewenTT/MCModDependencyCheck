@@ -1,5 +1,5 @@
+from importlib import resources
 import os.path
-import pkgutil
 import sys
 
 from DebugMode import *
@@ -211,8 +211,9 @@ def responseArgs():
         sys.exit(0)
 
     if showLicense == 'show':
-        contents_bytes = pkgutil.get_data('MCMDC', 'LICENSE')
-        print(contents_bytes)
+        # contents_bytes = resources.read_text(, 'LICENSE', encoding='UTF-8')
+        # print(contents_bytes)
+        pass
 
     if os.path.exists(filedir) is False:
         if isSetDir is True:
