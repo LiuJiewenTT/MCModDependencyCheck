@@ -1,3 +1,4 @@
+import os.path
 import sys
 
 from DebugMode import *
@@ -13,6 +14,8 @@ gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 toIgnore: bool
 IgnoreList: list
+isSetDir: bool
+showLicense: str
 
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
@@ -26,6 +29,10 @@ def main(filedir: str=None):
 
     if filedir is None:
         filedir = 'testres/'
+        if os.path.exists(filedir) is False or os.listdir(filedir) == []:
+            return
+
+    # print_debug(f'isSetDir: {isSetDir}', OHEADER, True)
 
     # print(filelist)
 
@@ -141,6 +148,8 @@ def processArgs(argv: list):
     retv['toIgnore'] = True
     retv['IgnoreList'] = ['forge', 'minecraft']
     retv['dir'] = 'testres/'
+    retv['isSetDir'] = False
+    retv['license'] = 'hide'
 
     flag = True
     try:
@@ -156,6 +165,9 @@ def processArgs(argv: list):
                 retv['IgnoreList'] = l
             elif argv[i] == '-dir':
                 retv['dir'] = argv[i+1].strip('" ')
+                retv['isSetDir'] = True
+            elif argv[i] == '-license':
+                retv['license'] = 'show'
             else:
                 flag = False
     except Exception as e:
@@ -166,15 +178,18 @@ def processArgs(argv: list):
             s: str = argv[-1].strip('"\' ')
             if os.path.isdir(s) is True:
                 retv['dir'] = argv[-1]
+                retv['isSetDir'] = True
     return retv
 
 def applyArgs(args: dict):
     OHEADER = f'{OHEADER_G}/processArgs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-    global toIgnore, IgnoreList
+    global toIgnore, IgnoreList, showLicense, isSetDir
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
+    showLicense = args.get('license')
+    isSetDir = args.get('isSetDir')
     return
 
 if __name__ == "__main__":
@@ -183,7 +198,25 @@ if __name__ == "__main__":
     applyArgs(args)
     filedir = args.get('dir')
 
-    # 忽略默认
+    # print('exists: ', os.path.exists(filedir))
+    # print('isSetDir: ', isSetDir)
+
+    if os.path.exists(filedir) is False:
+        if isSetDir is True:
+            print_log(strings.NO_FILEDIR)
+            print_debug(strings.NO_FILEDIR + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER_G, gmode.isDebug())
+            sys.exit(strings.NO_FILEDIR)
+        else:
+            sys.exit(0)
+    elif os.listdir(filedir) == []:
+        if isSetDir is True:
+            print_log(strings.EMPTY_FILELIST)
+            print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER_G, gmode.isDebug())
+            sys.exit(strings.NO_FILEDIR)
+        else:
+            sys.exit(0)
+
+        # 忽略默认
     # toIgnore = True
     # IgnoreList = ['forge', 'minecraft']
 
