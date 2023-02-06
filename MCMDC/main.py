@@ -1,7 +1,14 @@
 import sys
 
-from DebugMode import *
+
+# print(__all__)
+
+# import MCMDC
+
+
+from MCMDC.DebugMode import *
 initDefault_gmode(DEBUGMODE_GDEBUG)
+from MCMDC import *
 
 from common import *
 from Mod import Mod
