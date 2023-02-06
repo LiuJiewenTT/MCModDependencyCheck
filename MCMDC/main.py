@@ -1,4 +1,5 @@
 import os.path
+import pkgutil
 import sys
 
 from DebugMode import *
@@ -16,6 +17,7 @@ toIgnore: bool
 IgnoreList: list
 isSetDir: bool
 showLicense: str
+onlyAbout: bool
 
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
@@ -150,6 +152,7 @@ def processArgs(argv: list):
     retv['dir'] = 'testres/'
     retv['isSetDir'] = False
     retv['license'] = 'hide'
+    retv['onlyAbout'] = False
 
     flag = True
     try:
@@ -174,47 +177,42 @@ def processArgs(argv: list):
                 i += 1
             elif argv[i] == '-license':
                 retv['license'] = 'show'
+            elif argv[i] == '-onlyAbout':
+                retv['onlyAbout'] = False
             else:
                 flag = False
             i += 1
     except Exception as e:
         print(f'{LOGMODE_LOADING_OHEADER}', end='')
         print(e)
-    print(f'argc: {argc}')
+
     if flag is False:
-        print(f'argc: {argc}')
         if argc == 2:
             s: str = argv[-1].strip('"\' ')
-            if os.path.exists(s) is True:
-                print('exists')
-                if os.path.isdir(s) is True:
-                    retv['dir'] = s
-                    retv['isSetDir'] = True
-            else:
-                print('not exists')
-        else:
-            print(f'argc: {argc}')
+            retv['dir'] = s
+            retv['isSetDir'] = True
     return retv
 
 def applyArgs(args: dict):
     OHEADER = f'{OHEADER_G}/processArgs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-    global toIgnore, IgnoreList, showLicense, isSetDir
+    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
     showLicense = args.get('license')
     isSetDir = args.get('isSetDir')
+    onlyAbout = args.get('onlyAbout')
     return
 
-if __name__ == "__main__":
+def responseArgs():
+    if onlyAbout is True:
+        about_print()
+        sys.exit(0)
 
-    args: dict = processArgs(sys.argv)
-    applyArgs(args)
-    filedir = args.get('dir')
-
-    print('exists: ', os.path.exists(filedir))
-    print('isSetDir: ', isSetDir)
+    if showLicense == 'show':
+        contents_bytes = pkgutil.get_data('MCMDC', 'LICENSE')
+        print(contents_bytes)
 
     if os.path.exists(filedir) is False:
         if isSetDir is True:
@@ -224,12 +222,20 @@ if __name__ == "__main__":
         else:
             sys.exit(0)
     elif os.listdir(filedir) == []:
-        if isSetDir is True:
-            print_log(strings.EMPTY_FILELIST)
-            print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER_G, gmode.isDebug())
-            sys.exit(strings.EMPTY_FILELIST)
-        else:
-            sys.exit(0)
+        print_log(strings.EMPTY_FILELIST)
+        print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER_G, gmode.isDebug())
+        sys.exit(strings.EMPTY_FILELIST)
+
+if __name__ == "__main__":
+
+    args: dict = processArgs(sys.argv)
+    applyArgs(args)
+    filedir = args.get('dir')
+
+    # print('exists: ', os.path.exists(filedir))
+    # print('isSetDir: ', isSetDir)
+
+    responseArgs()
 
         # 忽略默认
     # toIgnore = True
