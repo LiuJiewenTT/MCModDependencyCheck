@@ -1,18 +1,10 @@
 import sys
-import zipfile
-import os
 
 from DebugMode import *
 initDefault_gmode(DEBUGMODE_GDEBUG)
 
-import constants
-from constants import *
-import strings
 from common import *
 from Mod import Mod
-from ModInfo import ModInfo
-from DependencyInfo import DependencyInfo
-
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 # print(__file__)

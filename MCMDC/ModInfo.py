@@ -4,7 +4,6 @@ from constants import *
 from DebugMode import *
 from common import print_log, print_debug
 from Info import Info
-from DependencyInfo import DependencyInfo
 from Version import Version
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
