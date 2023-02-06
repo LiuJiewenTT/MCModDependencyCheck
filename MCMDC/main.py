@@ -153,32 +153,47 @@ def processArgs(argv: list):
 
     flag = True
     try:
-        for i in range(0, argc):
+        i = 0
+        while i < argc:
             if argv[i] == '-toIgnore':
                 if argv[i+1].lower() == 'false':
                     retv['toIgnore'] = False
+                    i += 1
+                elif argv[i + 1].lower() == 'true':
+                    i += 1
             elif argv[i] == '-IgnoreList':
                 s: str = argv[i+1].strip(' ')
                 s = s[1:-1]
                 l = s.split(sep=',')
                 l = [x.strip('"\' ') for x in l]
                 retv['IgnoreList'] = l
+                i += 1
             elif argv[i] == '-dir':
                 retv['dir'] = argv[i+1].strip('" ')
                 retv['isSetDir'] = True
+                i += 1
             elif argv[i] == '-license':
                 retv['license'] = 'show'
             else:
                 flag = False
+            i += 1
     except Exception as e:
         print(f'{LOGMODE_LOADING_OHEADER}', end='')
         print(e)
+    print(f'argc: {argc}')
     if flag is False:
+        print(f'argc: {argc}')
         if argc == 2:
             s: str = argv[-1].strip('"\' ')
-            if os.path.isdir(s) is True:
-                retv['dir'] = argv[-1]
-                retv['isSetDir'] = True
+            if os.path.exists(s) is True:
+                print('exists')
+                if os.path.isdir(s) is True:
+                    retv['dir'] = s
+                    retv['isSetDir'] = True
+            else:
+                print('not exists')
+        else:
+            print(f'argc: {argc}')
     return retv
 
 def applyArgs(args: dict):
@@ -198,8 +213,8 @@ if __name__ == "__main__":
     applyArgs(args)
     filedir = args.get('dir')
 
-    # print('exists: ', os.path.exists(filedir))
-    # print('isSetDir: ', isSetDir)
+    print('exists: ', os.path.exists(filedir))
+    print('isSetDir: ', isSetDir)
 
     if os.path.exists(filedir) is False:
         if isSetDir is True:
@@ -212,7 +227,7 @@ if __name__ == "__main__":
         if isSetDir is True:
             print_log(strings.EMPTY_FILELIST)
             print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER_G, gmode.isDebug())
-            sys.exit(strings.NO_FILEDIR)
+            sys.exit(strings.EMPTY_FILELIST)
         else:
             sys.exit(0)
 
