@@ -7,6 +7,7 @@ APP_VERSION = '1.0.0'
 AUTHORS = ['LiuJiewenTT']
 PROJECT_LINK = 'https://github.com/LiuJiewenTT/MCModDependencyCheck'
 LICENSE = 'GPL-3.0'
+LICENSE_PATH = 'LICENSE'
 
 LOGMODE_LOG_OHEADER = '[Log]: '
 LOGMODE_DEBUG_OHEADER = '[Debug]: '

@@ -23,7 +23,7 @@ def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
 
     global gmode
-    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     # print_debug([toIgnore, IgnoreList], OHEADER, mode.isDebug())
 
@@ -64,10 +64,19 @@ def about_print():
     print(strings.ABOUT_PROJECTLINK + ': ' + PROJECT_LINK)
     return
 
+def license_print():
+    if os.path.exists(LICENSE_PATH) is False:
+        print_log(strings.LICENSE_FILE_MISSING)
+        return
+    with open(LICENSE_PATH, mode='r', encoding='utf-8') as file:
+        content = file.read()
+        print(content)
+    return
+
 def readmods_dir(filedir: str):
     # read mods from directory
     OHEADER = f'{OHEADER_G}/readmods_dir()'
-    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     filelist_temp = os.listdir(filedir)
 
@@ -138,12 +147,13 @@ def processArgs(argv: list):
     # -toIgnore [true/false] -dir ["testres/"]
 
     OHEADER = f'{OHEADER_G}/processArgs()'
-    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     print_debug(['Args: ', argv], OHEADER, mode.isDebug())
 
     argc = argv.__len__()
     retv = {}
+    unset_args = []
 
     # 默认设置
     # 忽略默认
@@ -156,7 +166,7 @@ def processArgs(argv: list):
 
     flag = True
     try:
-        i = 0
+        i = 1
         while i < argc:
             if argv[i] == '-toIgnore':
                 if argv[i+1].lower() == 'false':
@@ -178,17 +188,19 @@ def processArgs(argv: list):
             elif argv[i] == '-license':
                 retv['license'] = 'show'
             elif argv[i] == '-onlyAbout':
-                retv['onlyAbout'] = False
+                retv['onlyAbout'] = True
             else:
                 flag = False
+                unset_args.append(argv[i])
             i += 1
     except Exception as e:
         print(f'{LOGMODE_LOADING_OHEADER}', end='')
         print(e)
 
     if flag is False:
-        if argc == 2:
-            s: str = argv[-1].strip('"\' ')
+        print_debug(LOGMODE_LOADING_OHEADER+strings.ARGUMENTS_NOT_PROCESSED+unset_args.__str__(), OHEADER, mode.isDebug())
+        if unset_args.__len__() == 1:
+            s: str = unset_args[-1].strip('"\' ')
             retv['dir'] = s
             retv['isSetDir'] = True
     return retv
@@ -207,12 +219,15 @@ def applyArgs(args: dict):
 
 def responseArgs():
     if onlyAbout is True:
+        # print('onlyAbout')
         about_print()
         sys.exit(0)
 
     if showLicense == 'show':
+        # print('show license')
         # contents_bytes = resources.read_text(, 'LICENSE', encoding='UTF-8')
         # print(contents_bytes)
+        license_print()
         pass
 
     if os.path.exists(filedir) is False:
