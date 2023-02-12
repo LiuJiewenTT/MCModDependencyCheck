@@ -65,10 +65,23 @@ def about_print():
     return
 
 def license_print():
+    OHEADER = f'{OHEADER_G}/license_print()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
     if os.path.exists(LICENSE_PATH) is False:
         print_log(strings.LICENSE_FILE_MISSING)
-        return
-    with open(LICENSE_PATH, mode='r', encoding='utf-8') as file:
+        print_debug([strings.LICENSE_FILE_MISSING, LICENSE_PATH], OHEADER, mode.isDebug())
+
+        if os.path.exists(LICENSE_PATH_NOT_BUILDED) is True:
+            filedir = LICENSE_PATH_NOT_BUILDED
+        else:
+            print_log(strings.LICENSE_FILE_MISSING)
+            print_debug([strings.LICENSE_FILE_MISSING, LICENSE_PATH], OHEADER, mode.isDebug())
+            return
+    else:
+        filedir = LICENSE_PATH
+
+    with open(filedir, mode='r', encoding='utf-8') as file:
         content = file.read()
         print(content)
     return

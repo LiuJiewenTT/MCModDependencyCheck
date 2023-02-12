@@ -1,20 +1,8 @@
 import os.path as osp
 
-APP_NAME = 'MCModDependencyCheck'
-APP_NAME_DISPLAY = 'Minecraft Mod Dependency Check'
-APP_NAME_ABBR = 'MCMDC'
-APP_VERSION = '1.0.0'
-AUTHORS = ['LiuJiewenTT']
-PROJECT_LINK = 'https://github.com/LiuJiewenTT/MCModDependencyCheck'
-LICENSE = 'GPL-3.0'
-LICENSE_PATH = 'LICENSE'
-
 LOGMODE_LOG_OHEADER = '[Log]: '
 LOGMODE_DEBUG_OHEADER = '[Debug]: '
 LOGMODE_LOADING_OHEADER = '[ProgramLoad]: '
-# target_path = 'META-INF/mods.toml'
-
-RETV_ERROR = -1
 
 basedir: str
 
@@ -25,6 +13,22 @@ except Exception as e:
     # print(e)
     basedir = osp.dirname(__file__)
     print(f'{LOGMODE_LOADING_OHEADER}Basedir is set to [{basedir}].')
+
+APP_NAME = 'MCModDependencyCheck'
+APP_NAME_DISPLAY = 'Minecraft Mod Dependency Check'
+APP_NAME_ABBR = 'MCMDC'
+APP_VERSION = '1.0.0'
+AUTHORS = ['LiuJiewenTT']
+PROJECT_LINK = 'https://github.com/LiuJiewenTT/MCModDependencyCheck'
+LICENSE = 'GPL-3.0'
+
+# target_path = 'META-INF/mods.toml'
+
+RETV_ERROR = -1
+
+LICENSE_FILENAME = 'LICENSE'
+LICENSE_PATH = osp.join(basedir, LICENSE_FILENAME)
+LICENSE_PATH_NOT_BUILDED = osp.join(osp.join(basedir, '..'), LICENSE_FILENAME)
 
 
 # # filename_constants = 'constants.py'
