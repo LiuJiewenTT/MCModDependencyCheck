@@ -1,9 +1,26 @@
 from importlib import resources
 import os.path
 import sys
+from constants import *
 
+ifDebug: int
+
+if __name__ == "__main__":
+    import DebugMode
+    ifDebug = DebugMode.DEBUGMODE_NORMAL
+    for i in sys.argv:
+        if i == '-enableGlobalDebug':
+            ifDebug = DebugMode.DEBUGMODE_GDEBUG
+            sys.argv.remove('-enableGlobalDebug')
+            print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Global Debug".')
+        if i == '-enableDebug':
+            ifDebug = DebugMode.DEBUGMODE_DEBUG
+            sys.argv.remove('-enableDebug')
+            print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Debug".')
+    DebugMode.initDefault_gmode(ifDebug)
+    pass
 from DebugMode import *
-initDefault_gmode(DEBUGMODE_GDEBUG)
+# initDefault_gmode(DEBUGMODE_GDEBUG)
 
 from common import *
 from Mod import Mod
@@ -18,6 +35,7 @@ IgnoreList: list
 isSetDir: bool
 showLicense: str
 onlyAbout: bool
+forceMandatory: bool
 
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
@@ -62,6 +80,7 @@ def about_print():
     print(strings.ABOUT_PROJECT + ': ' + APP_NAME)
     print(strings.ABOUT_LICENSE + ': ' + LICENSE)
     print(strings.ABOUT_PROJECTLINK + ': ' + PROJECT_LINK)
+    print(strings.ABOUT_CONTACTEMAIL + ': ' + CONTACT_EMAIL)
     return
 
 def license_print():
@@ -142,12 +161,10 @@ def checkModIds(mods: list):
         flag = False
         for dependencyinfo in mod.modinfo.dependenciesinfo:
             if dependencyinfo.modId not in modIds:
-                if toIgnore is True:
-                    if dependencyinfo.modId not in IgnoreList:
-                        if dependencyinfo.modId not in modIds_lack_of:
-                            modIds_lack_of.append(dependencyinfo.modId)
-                else:
-                    if dependencyinfo.modId not in modIds_lack_of:
+                if toIgnore is True and dependencyinfo.modId in IgnoreList:
+                    continue
+                if dependencyinfo.modId not in modIds_lack_of:
+                    if forceMandatory is True or dependencyinfo.mandatory is True:
                         modIds_lack_of.append(dependencyinfo.modId)
                 flag = True
         if flag is True:
@@ -162,7 +179,7 @@ def processArgs(argv: list):
     OHEADER = f'{OHEADER_G}/processArgs()'
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
-    print_debug(['Args: ', argv], OHEADER, mode.isDebug())
+    print_debug(f'Args: {argv}', OHEADER, mode.isDebug())
 
     argc = argv.__len__()
     retv = {}
@@ -176,6 +193,7 @@ def processArgs(argv: list):
     retv['isSetDir'] = False
     retv['license'] = 'hide'
     retv['onlyAbout'] = False
+    retv['-forceMandatory'] = False
 
     flag = True
     try:
@@ -202,6 +220,8 @@ def processArgs(argv: list):
                 retv['license'] = 'show'
             elif argv[i] == '-onlyAbout':
                 retv['onlyAbout'] = True
+            elif argv[i] == '-forceMandatory':
+                retv['-forceMandatory'] = True
             else:
                 flag = False
                 unset_args.append(argv[i])
@@ -222,12 +242,13 @@ def applyArgs(args: dict):
     OHEADER = f'{OHEADER_G}/processArgs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout
+    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
     showLicense = args.get('license')
     isSetDir = args.get('isSetDir')
     onlyAbout = args.get('onlyAbout')
+    forceMandatory = args.get('forceMandatory')
     return
 
 def responseArgs():
