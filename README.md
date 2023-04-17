@@ -5,6 +5,8 @@ Check if all dependencies are good to go before launching a game. (for forge)
 
 See `working.md`.
 
+<strong style="color:red">Asking for an icon design! Asking for donation with love!</strong>
+
 **<mark>Will anybody help me design an icon?</mark>** **pls!**
 
 ## Words to say
