@@ -36,6 +36,7 @@ isSetDir: bool
 showLicense: str
 onlyAbout: bool
 forceMandatory: bool
+displayVersionOnly: bool
 
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
@@ -193,7 +194,8 @@ def processArgs(argv: list):
     retv['isSetDir'] = False
     retv['license'] = 'hide'
     retv['onlyAbout'] = False
-    retv['-forceMandatory'] = False
+    retv['forceMandatory'] = False
+    retv['version'] = False
 
     flag = True
     try:
@@ -221,7 +223,9 @@ def processArgs(argv: list):
             elif argv[i] == '-onlyAbout':
                 retv['onlyAbout'] = True
             elif argv[i] == '-forceMandatory':
-                retv['-forceMandatory'] = True
+                retv['forceMandatory'] = True
+            elif args[i] == '--version':
+                retv['version'] = True
             else:
                 flag = False
                 unset_args.append(argv[i])
@@ -242,16 +246,21 @@ def applyArgs(args: dict):
     OHEADER = f'{OHEADER_G}/processArgs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory
+    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory, displayVersionOnly
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
     showLicense = args.get('license')
     isSetDir = args.get('isSetDir')
     onlyAbout = args.get('onlyAbout')
     forceMandatory = args.get('forceMandatory')
+    displayVersionOnly = args.get('version')
     return
 
 def responseArgs():
+    if displayVersionOnly is True:
+        print(APP_VERSION)
+        sys.exit(0)
+
     if onlyAbout is True:
         # print('onlyAbout')
         about_print()

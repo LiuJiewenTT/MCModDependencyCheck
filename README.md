@@ -1,6 +1,13 @@
 # MCModDependencyCheck
 Check if all dependencies are good to go before launching a game. (for forge)
 
+![cover](./res/MCMDC-2-GIF2.gif)
+
+## License
+
+1. All the things under `./res/` have their own license. If not provided, they are reserved and you cannot use them or redistribute them without permission.
+2. The program has its own License and the release versions will include that thing.
+
 ## Working Progress
 
 See `working.md`.
