@@ -42,3 +42,6 @@ LICENSE_PATH_NOT_BUILDED = osp.join(osp.join(basedir, '..'), LICENSE_FILENAME)
 
 PART_LOCATOR = '[[dependencies.'
 VERSION_REDIRECTED_SIGN = '${file.jarVersion}'
+
+# documents
+DEFAULT_DOC = 'Manual'

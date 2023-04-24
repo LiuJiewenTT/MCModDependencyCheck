@@ -4,7 +4,7 @@
 
 Welcome! Thanks for choosing our product! In this manual, we will introduce all the things with *MCMDC(Minecraft Mod Dependency Check)* to you.
 
-![logo]()
+![logo](../doc-res/MCMDC-2-GIF2.gif)
 
 ## Brief Introduction
 

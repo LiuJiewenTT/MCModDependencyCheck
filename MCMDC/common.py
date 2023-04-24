@@ -146,7 +146,8 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
         i = right_idx
         print_debug(['i: ', i], OHEADER, mode.isDebug())
 
-    dict1['raw'] = raw
+    if mode.isDebug():
+        dict1['raw'] = raw
     return dict1
 
 def getParts(res: str, substr: str=None):

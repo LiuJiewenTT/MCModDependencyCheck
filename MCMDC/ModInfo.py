@@ -52,7 +52,7 @@ class ModInfo(Info):
         self.datadict = self.clearValueType()
 
         try:
-            self.raw = self.datadict['raw']
+            self.raw = self.datadict.get('raw')
 
             self.modId = self.datadict['modId']
             self.version = self.datadict['version']

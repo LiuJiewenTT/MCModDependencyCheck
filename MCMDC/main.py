@@ -22,6 +22,7 @@ if __name__ == "__main__":
 from DebugMode import *
 # initDefault_gmode(DEBUGMODE_GDEBUG)
 
+from docs_helper import *
 from common import *
 from Mod import Mod
 
@@ -37,6 +38,9 @@ showLicense: str
 onlyAbout: bool
 forceMandatory: bool
 displayVersionOnly: bool
+GiveDoc_Name: str
+DocLang: None
+ifChooseDoc: bool
 
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
@@ -196,8 +200,12 @@ def processArgs(argv: list):
     retv['onlyAbout'] = False
     retv['forceMandatory'] = False
     retv['version'] = False
+    retv['GiveDoc_Name'] = None
+    retv['DocLang'] = None
+    retv['ChooseDoc'] = False
 
     flag = True
+    i = None
     try:
         i = 1
         while i < argc:
@@ -224,15 +232,31 @@ def processArgs(argv: list):
                 retv['onlyAbout'] = True
             elif argv[i] == '-forceMandatory':
                 retv['forceMandatory'] = True
-            elif args[i] == '--version':
+            elif argv[i] == '--version':
                 retv['version'] = True
+            elif argv[i] == '-GiveDoc':
+                if i+1 < argc \
+                        and not argv[i+1].startswith('-'):
+                    retv['GiveDoc_Name'] = argv[i+1]
+                    i += 1
+                else:
+                    retv['GiveDoc_Name'] = DEFAULT_DOC
+            elif argv[i] == '-DocLang':
+                retv['DocLang'] = argv[i+1].strip('"\' ')
+                i += 1
+            elif argv[i] == '-ChooseDoc':
+                retv['ChooseDoc'] = True
             else:
+                if argv[i] == '--devpause':
+                    if gmode.isDebug():
+                        input('paused')
                 flag = False
                 unset_args.append(argv[i])
             i += 1
     except Exception as e:
-        print(f'{LOGMODE_LOADING_OHEADER}', end='')
+        print(f'{LOGMODE_LOADING_OHEADER}ERROR when processing "{argv[i]}". ', end='')
         print(e)
+        raise e
 
     if flag is False:
         print_debug(LOGMODE_LOADING_OHEADER+strings.ARGUMENTS_NOT_PROCESSED+unset_args.__str__(), OHEADER, mode.isDebug())
@@ -243,10 +267,11 @@ def processArgs(argv: list):
     return retv
 
 def applyArgs(args: dict):
-    OHEADER = f'{OHEADER_G}/processArgs()'
+    OHEADER = f'{OHEADER_G}/applyArgs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
-    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory, displayVersionOnly
+    global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory, displayVersionOnly,\
+        GiveDoc_Name, DocLang, ifChooseDoc
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
     showLicense = args.get('license')
@@ -254,9 +279,15 @@ def applyArgs(args: dict):
     onlyAbout = args.get('onlyAbout')
     forceMandatory = args.get('forceMandatory')
     displayVersionOnly = args.get('version')
+    GiveDoc_Name = args.get('GiveDoc_Name')
+    DocLang = args.get('DocLang')
+    ifChooseDoc = args.get('ChooseDoc')
     return
 
 def responseArgs():
+    OHEADER = f'{OHEADER_G}/responseArgs()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
     if displayVersionOnly is True:
         print(APP_VERSION)
         sys.exit(0)
@@ -273,6 +304,25 @@ def responseArgs():
         license_print()
         pass
 
+    if ifChooseDoc is True:
+        GiveDoc_Guide()
+        sys.exit(0)
+    elif GiveDoc_Name is not None:
+        global DocLang
+
+        if DocLang is None:
+            print_debug(f'Will use default first language in list.', OHEADER, mode.isDebug())
+            DocLang = doc_langs[0]
+
+        if DocLang not in doc_langs:
+            if DocLang is not None:
+                print_log(f'Doc language "{DocLang}" is not supported.')
+            else:
+                print_log(f'Doc language is None, which is unexpected to occur. Can\'t continue.')
+        else:
+            GiveDoc(GiveDoc_Name, DocLang)
+        sys.exit(0)
+
     if os.path.exists(filedir) is False:
         if isSetDir is True:
             print_log(strings.NO_FILEDIR)
@@ -284,6 +334,7 @@ def responseArgs():
         print_log(strings.EMPTY_FILELIST)
         print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER_G, gmode.isDebug())
         sys.exit(strings.EMPTY_FILELIST)
+
 
 if __name__ == "__main__":
 

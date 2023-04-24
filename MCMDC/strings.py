@@ -9,6 +9,9 @@ ABOUT_LICENSE = 'License'
 ABOUT_VERSION = 'Version'
 ABOUT_CONTACTEMAIL = 'Contact Email'
 
+# Document section
+DOCS_MANUAL = 'Manual'
+
 # other
 CURRENT_FILE_PREFIX = 'Current file: '
 TARGET_FOUNDED = f'Target file exists. '
