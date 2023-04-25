@@ -1,6 +1,7 @@
 from importlib import resources
 import os.path
 import sys
+import constants
 from constants import *
 
 ifDebug: int
@@ -41,6 +42,7 @@ displayVersionOnly: bool
 GiveDoc_Name: str
 DocLang: None
 ifChooseDoc: bool
+devpause: bool
 
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
@@ -205,6 +207,7 @@ def processArgs(argv: list):
     retv['GiveDoc_Name'] = None
     retv['DocLang'] = None
     retv['ChooseDoc'] = False
+    retv['devpause'] = False
 
     flag = True
     i = None
@@ -248,10 +251,11 @@ def processArgs(argv: list):
                 i += 1
             elif argv[i] == '-ChooseDoc':
                 retv['ChooseDoc'] = True
+            elif argv[i] == '--devpause':
+                retv['devpause'] = True
+                if gmode.isDebug():
+                    input('paused')
             else:
-                if argv[i] == '--devpause':
-                    if gmode.isDebug():
-                        input('paused')
                 flag = False
                 unset_args.append(argv[i])
             i += 1
@@ -273,7 +277,7 @@ def applyArgs(args: dict):
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
     global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory, displayVersionOnly,\
-        GiveDoc_Name, DocLang, ifChooseDoc
+        GiveDoc_Name, DocLang, ifChooseDoc, devpause
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
     showLicense = args.get('license')
@@ -284,11 +288,14 @@ def applyArgs(args: dict):
     GiveDoc_Name = args.get('GiveDoc_Name')
     DocLang = args.get('DocLang')
     ifChooseDoc = args.get('ChooseDoc')
+    devpause = args.get('devpause')
     return
 
 def responseArgs():
     OHEADER = f'{OHEADER_G}/responseArgs()'
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
+    constants.devpause = devpause
 
     if displayVersionOnly is True:
         print(APP_VERSION)

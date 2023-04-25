@@ -28,6 +28,8 @@ except Exception as e:
         isBuilt = True
         print(f'{LOGMODE_LOADING_OHEADER}This is a builded version.')
 
+devpause: bool
+
 APP_NAME = 'MCModDependencyCheck'
 APP_NAME_DISPLAY = 'Minecraft Mod Dependency Check'
 APP_NAME_ABBR = 'MCMDC'
