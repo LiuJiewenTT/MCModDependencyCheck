@@ -96,7 +96,9 @@ def license_print():
         print_log(strings.LICENSE_FILE_MISSING)
         print_debug([strings.LICENSE_FILE_MISSING, LICENSE_PATH], OHEADER, mode.isDebug())
 
-        if os.path.exists(LICENSE_PATH_NOT_BUILDED) is True:
+        if os.path.exists(LICENSE_PATH_NOT_BUILDED):
+            # Now accept outer license file.
+            print_log(strings.LICENSE_FROM_OUTER)
             filedir = LICENSE_PATH_NOT_BUILDED
         else:
             print_log(strings.LICENSE_FILE_MISSING)

@@ -1,4 +1,6 @@
+import os
 import os.path as osp
+import sys
 
 LOGMODE_LOG_OHEADER = '[Log]: '
 LOGMODE_DEBUG_OHEADER = '[Debug]: '
@@ -13,6 +15,18 @@ except Exception as e:
     # print(e)
     basedir = osp.dirname(__file__)
     print(f'{LOGMODE_LOADING_OHEADER}Basedir is set to [{basedir}].')
+
+isBuilt: bool
+
+try:
+    if isBuilt is None: pass;
+except Exception as e:
+    if osp.basename(sys.argv[0]).rfind('.py') != -1:
+        isBuilt = False
+        print(f'{LOGMODE_LOADING_OHEADER}This is a not builded version.')
+    else:
+        isBuilt = True
+        print(f'{LOGMODE_LOADING_OHEADER}This is a builded version.')
 
 APP_NAME = 'MCModDependencyCheck'
 APP_NAME_DISPLAY = 'Minecraft Mod Dependency Check'
@@ -29,7 +43,7 @@ RETV_ERROR = -1
 
 LICENSE_FILENAME = 'LICENSE'
 LICENSE_PATH = osp.join(basedir, LICENSE_FILENAME)
-LICENSE_PATH_NOT_BUILDED = osp.join(osp.join(basedir, '..'), LICENSE_FILENAME)
+LICENSE_PATH_NOT_BUILDED = osp.join(basedir, '..', LICENSE_FILENAME)
 
 
 # # filename_constants = 'constants.py'
