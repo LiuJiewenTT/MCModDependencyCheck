@@ -1,3 +1,4 @@
+import difflib
 import os
 import sys
 import time
@@ -41,9 +42,10 @@ def __moreimport__():
     import constants
     if 'devpause' not in vars() and 'devpause' in vars(constants):
         from constants import devpause
+        print_debug('devpause is imported.', OHEADER, mode.isDebug())
         # input('imp')
         # devpause = main.devpause
-    print_debug(['devpause' not in vars(), 'devpause' in vars(constants)], OHEADER, mode.isDebug())
+    print_debug(['devpause' not in vars(), 'devpause' in vars(constants)], OHEADER, mode.isDebug(False))
 
 
 def LocateExecutor(executor: str):
@@ -53,6 +55,7 @@ def LocateExecutor(executor: str):
     else:
         paths = paths_str.split(':')
     retv = None
+    # Here needs more operations.
     for path in paths:
         if osp.exists(osp.join(path, executor)):
             retv = path
@@ -113,11 +116,18 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
         if mode.isDebug() and devpause:
             input('paused')
 
-        send_ok = False
+        timeout_basic = 5
+        timeout_extended = 0
+        timeout_incrementStep = 1
+        send_started = False
         file_opened = False
+        send_ok_certainly = False
         len_pre = len_now = 0
+        oflist_names = []
+        oflist_names_pre = []
+        differ = difflib.Differ()
         t0 = time.time()
-        while (not send_ok or file_opened):
+        while (not send_started or file_opened):
             # print_debug('read states')
             try:
                 oflist = [list(x) for x in sp_info.open_files()]
@@ -129,22 +139,42 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
                 break
             len_now = oflist.__len__()
             if len_now != len_pre:
-                print_log([len_pre, len_now])
+                print_debug('Process Supervisor: new count: {pre}=>{now}.'
+                            .format(pre=len_pre, now=len_now), OHEADER, mode.isDebug())
+                if len_now > len_pre and len_pre:
+                    timeout_extended += timeout_incrementStep
+            if mode.isDebug():
+                oflist_names = [x[0] for x in oflist]
+                difflist = list(differ.compare(oflist_names_pre, oflist_names))
+                for item in difflist:
+                    if item[0] != ' ':
+                        print_debug('difflist: {item}'.format(item=item), OHEADER, mode.isDebug())
+
             for item in oflist:
                 # print(filepath, item)
                 if filepath in item:
                     print_debug(oflist, OHEADER, mode.isDebug())
                     file_opened = True
-                    send_ok = True
-                elif send_ok:
+                    send_started = True
+                elif send_started:
                     file_opened = False
             # time.sleep(0.1)
             len_pre = len_now
-            if time.time() - t0 >= 5:
+            if mode.isDebug():
+                oflist_names_pre = oflist_names
+            if time.time() - t0 >= timeout_basic + timeout_extended:
+                print_log('Process Supervision timeout: Over {timeout} seconds. '.format(timeout=timeout_basic+timeout_extended))
+                print_debug('Process Supervision timeout: Over {timeout_basic}+{timeout_extended} seconds. '
+                          .format(timeout_basic=timeout_basic, timeout_extended=timeout_extended), OHEADER, mode.isDebug())
                 break
         # sp.kill() # Should not kill unless it is suspended.
         if sp.is_running() and sp.status() == 'stopped':
+            print_log('Kill suspended subprocess. (pid={pid}'.format(pid=sp.pid))
             sp.kill()
+
+        if send_started is True and file_opened is False:
+            # When send_ok_certainly is False, it doesn't mean a failure.
+            send_ok_certainly = True
     pass
 
 
