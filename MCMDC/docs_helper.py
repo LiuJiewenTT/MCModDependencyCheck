@@ -34,13 +34,16 @@ if 'env_trusted_paths' not in vars():
         env_trusted_paths = env_trusted_paths_unix
 
 def __moreimport__():
+    OHEADER = f'{OHEADER_G}/__moreimport__()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
     global devpause
     import constants
     if 'devpause' not in vars() and 'devpause' in vars(constants):
         from constants import devpause
         # input('imp')
         # devpause = main.devpause
-    print_debug(['devpause' not in vars(), 'devpause' in vars(constants)])
+    print_debug(['devpause' not in vars(), 'devpause' in vars(constants)], OHEADER, mode.isDebug())
 
 
 def LocateExecutor(executor: str):
