@@ -3,7 +3,6 @@ import os
 import sys
 import time
 
-import path
 # import shlex, subprocess
 
 import psutil
@@ -33,9 +32,9 @@ def __moreimport__():
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     global devpause
-    import constants
+    from . import constants
     if 'devpause' not in vars() and 'devpause' in vars(constants):
-        from constants import devpause
+        from .constants import devpause
         print_debug('devpause is imported.', OHEADER, mode.isDebug())
         # input('imp')
         # devpause = main.devpause

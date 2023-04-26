@@ -4,34 +4,14 @@ import sys
 from . import constants
 from .constants import *
 
-ifDebug: int
-
-if __name__ == "__main__":
-    import DebugMode
-    ifDebug = DebugMode.DEBUGMODE_NORMAL
-    for i in sys.argv:
-        if i == '-enableGlobalDebug':
-            ifDebug = DebugMode.DEBUGMODE_GDEBUG
-            sys.argv.remove('-enableGlobalDebug')
-            print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Global Debug".')
-        if i == '-enableDebug':
-            ifDebug = DebugMode.DEBUGMODE_DEBUG
-            sys.argv.remove('-enableDebug')
-            print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Debug".')
-    DebugMode.initDefault_gmode(ifDebug)
-    pass
-from .DebugMode import *
-# initDefault_gmode(DEBUGMODE_GDEBUG)
-
 from .docs_helper import *
 from .common import *
 from .Mod import Mod
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
-# print(__file__)
-
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
+filedir: str
 toIgnore: bool
 IgnoreList: list
 isSetDir: bool
@@ -345,21 +325,6 @@ def responseArgs():
         sys.exit(strings.EMPTY_FILELIST)
 
 
-if __name__ == "__main__":
 
-    args: dict = processArgs(sys.argv)
-    applyArgs(args)
-    filedir = args.get('dir')
-
-    # print('exists: ', os.path.exists(filedir))
-    # print('isSetDir: ', isSetDir)
-
-    responseArgs()
-
-        # 忽略默认
-    # toIgnore = True
-    # IgnoreList = ['forge', 'minecraft']
-
-    main(filedir)
 
 
