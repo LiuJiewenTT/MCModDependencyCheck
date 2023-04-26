@@ -23,7 +23,7 @@ try:
 except Exception as e:
     if osp.basename(sys.argv[0]).rfind('.py') != -1:
         isBuilt = False
-        print(f'{LOGMODE_LOADING_OHEADER}This is a not builded version.')
+        print(f'{LOGMODE_LOADING_OHEADER}This is a non-builded version.')
     else:
         isBuilt = True
         print(f'{LOGMODE_LOADING_OHEADER}This is a builded version.')

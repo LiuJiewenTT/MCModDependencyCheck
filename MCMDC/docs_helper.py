@@ -4,7 +4,7 @@ import sys
 import time
 
 import path
-import shlex, subprocess
+# import shlex, subprocess
 
 import psutil
 
@@ -20,19 +20,13 @@ gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
 reserved_docNames = {'Manual': 'Manual'}
 doc_langs = ['en-us', 'zh-cn']
+
+# If you want to trust "./...", don't just write "..." but "./..." instead.
 trusted_docExecutors = ['notepad.exe']
 env_trusted_paths: list
-env_trusted_paths_win32 = ['C:\\windows\\system32', ]
-env_trusted_paths_unix = []
+env_trusted_paths_win32: list
+env_trusted_paths_unix: list
 
-# try:
-#     if env_trusted_paths is not None: pass
-# except Exception as e:
-if 'env_trusted_paths' not in vars():
-    if sys.platform == 'win32':
-        env_trusted_paths = env_trusted_paths_win32
-    else:
-        env_trusted_paths = env_trusted_paths_unix
 
 def __moreimport__():
     OHEADER = f'{OHEADER_G}/__moreimport__()'
@@ -48,17 +42,87 @@ def __moreimport__():
     print_debug(['devpause' not in vars(), 'devpause' in vars(constants)], OHEADER, mode.isDebug(False))
 
 
+def env_trusted_paths_win32_init():
+    global env_trusted_paths_win32
+    env_trusted_paths_win32 = []
+    env_trusted_paths_win32.append(osp.join(os.getenv('windir'), 'system32'))
+
+
+def env_trusted_paths_unix_init():
+    global env_trusted_paths_unix
+    env_trusted_paths_unix = []
+
+
+def env_trusted_paths_init():
+    global env_trusted_paths
+    # try:
+    #     if env_trusted_paths is not None: pass
+    # except Exception as e:
+    if 'env_trusted_paths' not in vars():
+        if sys.platform == 'win32':
+            env_trusted_paths_win32_init()
+            env_trusted_paths = env_trusted_paths_win32
+        else:
+            env_trusted_paths_unix_init()
+            env_trusted_paths = env_trusted_paths_unix
+        # print(env_trusted_paths)
+
+
+env_trusted_paths_init()
+
+
+def yieldDocName(doc: str):
+    ext = []
+    ext_md = ['md', 'markdown']
+    ext.extend(ext_md)
+    retv = doc
+    for i in ext:
+        retv = doc + '.' + i
+        yield retv
+    return retv
+
+def GetActualDocName(doc: str):
+    if osp.exists(doc):
+        return doc
+
+
+
+def GetActualExecutorName(executor: str):
+    if sys.platform == 'win32':
+        priority_list = ['com', 'exe', 'bat']
+        if executor.rpartition('.')[-1] in priority_list:
+            return executor
+        for i in priority_list:
+            te = executor + '.' + i
+            if osp.exists(te):
+                return te
+        # No legal executable name.
+        return executor
+    else:
+        return executor
+
+
 def LocateExecutor(executor: str):
+    OHEADER = f'{OHEADER_G}/LocateExecutor()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
+    retv = None
+    if osp.exists(executor):
+        retv = osp.dirname(osp.normpath(executor))
+        return retv
     paths_str = os.getenv('PATH')
     if sys.platform == 'win32':
         paths = paths_str.split(';')
     else:
         paths = paths_str.split(':')
-    retv = None
-    # Here needs more operations.
-    for path in paths:
-        if osp.exists(osp.join(path, executor)):
-            retv = path
+    # print_debug(paths)
+    paths.extend(env_trusted_paths)
+    # print_debug(paths)
+    for path_i in paths:
+        tp = GetActualExecutorName(osp.join(path_i, executor))
+        if osp.exists(tp):
+            print_debug(tp, OHEADER, mode.isDebug())
+            retv = path_i
             break
     return retv
 
@@ -86,13 +150,31 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
                 executor_untrusted = executor.partition('start ')[-1]
             else:
                 executor_untrusted = executor
+            executor_untrusted = GetActualExecutorName(executor_untrusted)
+            if osp.exists(executor_untrusted):
+                executor_untrusted = osp.join('.', executor_untrusted)
             if executor_untrusted not in trusted_docExecutors:
                 print_log(strings.DOCSHELPER_GIVEDOC_WARN_UNTRUSTED_EXECUTOR.format(executor=executor_untrusted))
                 # May apply basic security examination here in the future.
             else:
                 print_log(strings.DOCSHELPER_GIVEDOC_EXECUTOR_CHANGED_TRUSTED.format(executor=executor_untrusted))
             executor_dir = LocateExecutor(executor_untrusted)
-            if executor_dir not in env_trusted_paths:
+            if executor_dir is None:
+                print_log('Executor cannot be located. ')
+                if sys.platform == 'win32':
+                    print_debug('Executor cannot be located. '
+                                + 'You may check with "{command}"'
+                                .format(command='echo %PATH% | findstr "{executor}"'
+                                        .format(executor=osp.basename(executor_untrusted))),
+                                OHEADER, mode.isDebug())
+                else:
+                    print_debug('Executor cannot be located. '
+                                + 'You may check with "{command}"'
+                                .format(command='echo $PATH | grep "{executor}"'
+                                        .format(executor=osp.basename(executor_untrusted))),
+                                OHEADER, mode.isDebug())
+                return False
+            elif executor_dir not in env_trusted_paths:
                 print_log(strings.DOCSHELPER_EXECUTOR_NOT_IN_TRUSTED_LOCATION.format(executor_dir=executor_dir))
 
         command = f'{executor} {filepath}'
@@ -175,13 +257,21 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
         if send_started is True and file_opened is False:
             # When send_ok_certainly is False, it doesn't mean a failure.
             send_ok_certainly = True
-    pass
+    return True
 
 
 def GiveDoc_Guide():
     __moreimport__()
 
+    # print_debug(env_trusted_paths)
+    # print_debug(env_trusted_paths_win32)
+    # print_debug(env_trusted_paths_unix)
+
     file = input('Please choose a file: ').strip('" ')
     lang = input('Please choose a language: ').strip('"\' ')
     executor = input('Please choose an executor: ').strip('" ')
-    GiveDoc(file, lang, executor=executor)
+    retv = GiveDoc(file, lang, executor=executor)
+    if retv is False:
+        print_log('GiveDoc Failed. ')
+    else:
+        print_log('GiveDoc Might Succeed. ')
