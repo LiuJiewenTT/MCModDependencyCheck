@@ -2,6 +2,9 @@ import time
 from importlib import resources
 import os.path
 import sys
+
+from typing import List
+
 import constants
 from constants import *
 
@@ -42,6 +45,8 @@ forceMandatory: bool
 displayVersionOnly: bool
 GiveDoc_Name: str
 DocLang: None
+GiveDoc_PauseExit: bool
+GiveDoc_SleepExit: int
 ifChooseDoc: bool
 devpause: bool
 
@@ -191,6 +196,7 @@ def processArgs(argv: list):
 
     print_debug(f'Args: {argv}', OHEADER, mode.isDebug())
 
+    argv: List[str]
     argc = argv.__len__()
     retv = {}
     unset_args = []
@@ -207,6 +213,8 @@ def processArgs(argv: list):
     retv['version'] = False
     retv['GiveDoc_Name'] = None
     retv['DocLang'] = None
+    retv['GiveDoc_PauseExit'] = False
+    retv['GiveDoc_SleepExit'] = 1
     retv['ChooseDoc'] = False
     retv['devpause'] = False
 
@@ -252,6 +260,13 @@ def processArgs(argv: list):
             elif argv[i] == '-DocLang':
                 retv['DocLang'] = argv[i+1].strip('"\' ')
                 i += 1
+            elif argv[i] == '-GiveDoc_PauseExit':
+                retv['GiveDoc_PauseExit'] = True
+            elif argv[i] == '-GiveDoc_SleepExit':
+                if i+1 < argc \
+                        and not argv[i+1].startswith('-'):
+                    if argv[i+1].isdigit():
+                        retv['GiveDoc_SleepExit'] = eval(argv[i+1])
             elif argv[i] == '-ChooseDoc':
                 retv['ChooseDoc'] = True
             elif argv[i] == '--devpause':
@@ -280,7 +295,7 @@ def applyArgs(args: dict):
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
     global toIgnore, IgnoreList, showLicense, isSetDir, onlyAbout, forceMandatory, displayVersionOnly,\
-        GiveDoc_Name, DocLang, ifChooseDoc, devpause
+        GiveDoc_Name, DocLang, GiveDoc_PauseExit, GiveDoc_SleepExit, ifChooseDoc, devpause
     toIgnore = args.get('toIgnore')
     IgnoreList = args.get('IgnoreList')
     showLicense = args.get('license')
@@ -290,6 +305,8 @@ def applyArgs(args: dict):
     displayVersionOnly = args.get('version')
     GiveDoc_Name = args.get('GiveDoc_Name')
     DocLang = args.get('DocLang')
+    GiveDoc_PauseExit = args.get('GiveDoc_PauseExit')
+    GiveDoc_SleepExit = args.get('GiveDoc_SleepExit')
     ifChooseDoc = args.get('ChooseDoc')
     devpause = args.get('devpause')
     return
@@ -318,7 +335,10 @@ def responseArgs():
 
     if ifChooseDoc is True:
         GiveDoc_Guide()
-        time.sleep(1)
+        if GiveDoc_PauseExit:
+            input('Paused, Enter to resume. ')
+        else:
+            time.sleep(GiveDoc_SleepExit)
         sys.exit(0)
     elif GiveDoc_Name is not None:
         global DocLang
@@ -335,7 +355,10 @@ def responseArgs():
         else:
             for Doc_Name in GiveDoc_Name:
                 GiveDoc(Doc_Name, DocLang)
-        time.sleep(1)
+        if GiveDoc_PauseExit:
+            input('Paused, Enter to resume. ')
+        else:
+            time.sleep(GiveDoc_SleepExit)
         sys.exit(0)
 
     if os.path.exists(filedir) is False:

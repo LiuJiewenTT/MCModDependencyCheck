@@ -213,9 +213,10 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
         # for i in startOptions:
         #     command += f' {i}'
         if startOptions != [] and startOptions is not None:
-            command = shlex.join([executor, startOptions, filepath])
+            option_str = shlex.join(startOptions)
         else:
-            command = shlex.join([executor, filepath])
+            option_str = ''
+        command = f'{executor} {option_str} {filepath}'
         print_log(strings.DOCSHELPER_GIVEDOC_OPENING)
         print_debug(strings.DOCSHELPER_GIVEDOC_OPENING_DEBUG.format(command=command), OHEADER, mode.isDebug())
         # os.system(command)
