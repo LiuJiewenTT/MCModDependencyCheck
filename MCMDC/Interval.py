@@ -1,10 +1,10 @@
 import os
 
-from common import print_log, print_debug
-import strings
-from constants import *
-from DebugMode import *
-from Version import Version
+from .common import print_log, print_debug
+from . import strings
+from .constants import *
+from .DebugMode import *
+from .Version import Version
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)

@@ -1,8 +1,8 @@
 from importlib import resources
 import os.path
 import sys
-import constants
-from constants import *
+from . import constants
+from .constants import *
 
 ifDebug: int
 
@@ -20,12 +20,12 @@ if __name__ == "__main__":
             print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Debug".')
     DebugMode.initDefault_gmode(ifDebug)
     pass
-from DebugMode import *
+from .DebugMode import *
 # initDefault_gmode(DEBUGMODE_GDEBUG)
 
-from docs_helper import *
-from common import *
-from Mod import Mod
+from .docs_helper import *
+from .common import *
+from .Mod import Mod
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 # print(__file__)

@@ -1,10 +1,10 @@
 import os
-import strings
-from constants import *
-from DebugMode import *
-from common import print_log, print_debug
-from Info import Info
-from Interval import Interval
+from . import strings
+from .constants import *
+from .DebugMode import *
+from .common import print_log, print_debug
+from .Info import Info
+from .Interval import Interval
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
