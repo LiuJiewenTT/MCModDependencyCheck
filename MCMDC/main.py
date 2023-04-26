@@ -338,6 +338,7 @@ def responseArgs():
         if GiveDoc_PauseExit:
             input('Paused, Enter to resume. ')
         else:
+            print_log('Wait for {seconds} and then exit. '.format(seconds=GiveDoc_SleepExit))
             time.sleep(GiveDoc_SleepExit)
         sys.exit(0)
     elif GiveDoc_Name is not None:
@@ -358,6 +359,7 @@ def responseArgs():
         if GiveDoc_PauseExit:
             input('Paused, Enter to resume. ')
         else:
+            print_log('Wait for {seconds} and then exit. '.format(seconds=GiveDoc_SleepExit))
             time.sleep(GiveDoc_SleepExit)
         sys.exit(0)
 
