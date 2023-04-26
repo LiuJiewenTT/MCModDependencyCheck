@@ -1,5 +1,5 @@
 import os
-import strings
+from . import strings
 from constants import *
 from DebugMode import *
 
