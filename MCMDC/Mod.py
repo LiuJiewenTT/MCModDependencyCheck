@@ -1,14 +1,14 @@
 import zipfile
 import os
 
-import common
-import strings
-from constants import *
-from ModInfo import ModInfo
-from DependencyInfo import DependencyInfo
-from Version import Version
-from common import print_log, print_debug
-from DebugMode import *
+from . import common
+from . import strings
+from .constants import *
+from .ModInfo import ModInfo
+from .DependencyInfo import DependencyInfo
+from .Version import Version
+from .common import print_log, print_debug
+from .DebugMode import *
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
