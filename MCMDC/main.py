@@ -1,3 +1,4 @@
+import time
 from importlib import resources
 import os.path
 import sys
@@ -240,12 +241,14 @@ def processArgs(argv: list):
             elif argv[i] == '--version':
                 retv['version'] = True
             elif argv[i] == '-GiveDoc':
+                if retv['GiveDoc_Name'] is None:
+                    retv['GiveDoc_Name'] = []
                 if i+1 < argc \
                         and not argv[i+1].startswith('-'):
-                    retv['GiveDoc_Name'] = argv[i+1]
+                    retv['GiveDoc_Name'].append(argv[i+1])
                     i += 1
                 else:
-                    retv['GiveDoc_Name'] = DEFAULT_DOC
+                    retv['GiveDoc_Name'].append(DEFAULT_DOC)
             elif argv[i] == '-DocLang':
                 retv['DocLang'] = argv[i+1].strip('"\' ')
                 i += 1
@@ -315,6 +318,7 @@ def responseArgs():
 
     if ifChooseDoc is True:
         GiveDoc_Guide()
+        time.sleep(1)
         sys.exit(0)
     elif GiveDoc_Name is not None:
         global DocLang
@@ -329,7 +333,9 @@ def responseArgs():
             else:
                 print_log(f'Doc language is None, which is unexpected to occur. Can\'t continue.')
         else:
-            GiveDoc(GiveDoc_Name, DocLang)
+            for Doc_Name in GiveDoc_Name:
+                GiveDoc(Doc_Name, DocLang)
+        time.sleep(1)
         sys.exit(0)
 
     if os.path.exists(filedir) is False:

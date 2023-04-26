@@ -3,8 +3,7 @@ import os
 import sys
 import time
 
-import path
-# import shlex, subprocess
+import shlex
 
 import psutil
 
@@ -73,27 +72,35 @@ env_trusted_paths_init()
 
 def yieldDocName(doc: str):
     ext = []
-    ext_md = ['md', 'markdown']
+    ext_md = ['.md', '.markdown']
+    ext_text = ['.txt', '.log']
     ext.extend(ext_md)
+    ext.extend(ext_text)
+
     retv = doc
+    yield retv
     for i in ext:
-        retv = doc + '.' + i
+        retv = doc + i
         yield retv
-    return retv
 
 def GetActualDocName(doc: str):
-    if osp.exists(doc):
-        return doc
-
+    # if osp.exists(doc):
+    #     return doc
+    for name in yieldDocName(doc):
+        print_debug(name, enabled=False)
+        if osp.exists(name):
+            return name
+    # Leave it
+    return doc
 
 
 def GetActualExecutorName(executor: str):
     if sys.platform == 'win32':
-        priority_list = ['com', 'exe', 'bat']
-        if executor.rpartition('.')[-1] in priority_list:
+        priority_list = ['.com', '.exe', '.bat']
+        if osp.splitext(executor)[-1] in priority_list:
             return executor
         for i in priority_list:
-            te = executor + '.' + i
+            te = executor + i
             if osp.exists(te):
                 return te
         # No legal executable name.
@@ -111,10 +118,11 @@ def LocateExecutor(executor: str):
         retv = osp.dirname(osp.normpath(executor))
         return retv
     paths_str = os.getenv('PATH')
-    if sys.platform == 'win32':
-        paths = paths_str.split(';')
-    else:
-        paths = paths_str.split(':')
+    # if sys.platform == 'win32':
+    #     paths = paths_str.split(';')
+    # else:
+    #     paths = paths_str.split(':')
+    paths = paths_str.split(osp.pathsep)
     # print_debug(paths)
     paths.extend(env_trusted_paths)
     # print_debug(paths)
@@ -127,26 +135,44 @@ def LocateExecutor(executor: str):
     return retv
 
 
-def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOptions: list = []):
+def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOptions: list = [], disableReserves: bool = False):
     OHEADER = f'{OHEADER_G}/GiveDoc()'
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     __moreimport__()
 
-    print_log(f'Document: {file}')
-    print_log(f'Doc Lang: {lang}')
     if isBuilt:
         filepath = os.path.join(basedir, 'docs')
     else:
         filepath = os.path.join(basedir, '..', 'docs')
         filepath = os.path.normpath(filepath)
+
+    print_debug(file, enabled=False)
+
+    if disableReserves is False:
+        if file in reserved_docNames.keys():
+            print_debug('Filename is reserved. Replace it with: {newfilename}'
+                        .format(newfilename=reserved_docNames[file]), OHEADER, mode.isDebug())
+            file = reserved_docNames[file]
+
+    file_ActualName = GetActualDocName(osp.join(filepath, lang, file))
+
+    if not file_ActualName.endswith(file):
+        file_ext = osp.splitext(file_ActualName)[-1]
+        file = file + file_ext
+        print_debug('Found file with expansion mode: {file}. '.format(file=file), OHEADER, mode.isDebug())
+
+    print_log(f'Document: {file}')
+    print_log(f'Doc Lang: {lang}')
+
     filepath = os.path.join(filepath, lang, file)
     if not os.path.exists(filepath):
         print_log(strings.ERROR_FILE_NOT_FOUND + f'File Path: "{filepath}".')
+        return False
     else:
         # Basic Security Examination
         if executor != 'start':
-            if executor.strip(' ').find('start ') == 0:
+            if executor.lstrip(' ').find('start ') == 0:
                 executor_untrusted = executor.partition('start ')[-1]
             else:
                 executor_untrusted = executor
@@ -177,9 +203,19 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
             elif executor_dir not in env_trusted_paths:
                 print_log(strings.DOCSHELPER_EXECUTOR_NOT_IN_TRUSTED_LOCATION.format(executor_dir=executor_dir))
 
-        command = f'{executor} {filepath}'
-        for i in startOptions:
-            command += f' {i}'
+        if executor.lstrip(' ').find('start') == 0:
+            if sys.platform == 'win32':
+                executor = executor.replace('start', 'cmd.exe /c start', 1)
+            else:
+                executor = executor.replace('start', 'sh', 1)
+
+        # command = f'{executor} {filepath}'
+        # for i in startOptions:
+        #     command += f' {i}'
+        if startOptions != [] and startOptions is not None:
+            command = shlex.join([executor, startOptions, filepath])
+        else:
+            command = shlex.join([executor, filepath])
         print_log(strings.DOCSHELPER_GIVEDOC_OPENING)
         print_debug(strings.DOCSHELPER_GIVEDOC_OPENING_DEBUG.format(command=command), OHEADER, mode.isDebug())
         # os.system(command)
@@ -269,8 +305,10 @@ def GiveDoc_Guide():
 
     file = input('Please choose a file: ').strip('" ')
     lang = input('Please choose a language: ').strip('"\' ')
-    executor = input('Please choose an executor: ').strip('" ')
-    retv = GiveDoc(file, lang, executor=executor)
+    executor = input('Please choose an executor: ').strip(' ')
+    options_str = input('Please input options: ')
+    options = shlex.split(options_str, posix=(sys.platform != 'win32'))
+    retv = GiveDoc(file, lang, executor=executor, startOptions=options)
     if retv is False:
         print_log('GiveDoc Failed. ')
     else:
