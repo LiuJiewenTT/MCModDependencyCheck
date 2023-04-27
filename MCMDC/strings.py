@@ -1,4 +1,4 @@
-from . import constants
+import constants
 
 strings_loaded: bool
 # try:

@@ -7,8 +7,8 @@ import shlex
 
 import psutil
 
-from .constants import *
-from . import strings
+from constants import *
+import strings
 from .DebugMode import *
 from .common import print_log, print_debug
 # from main import devpause
