@@ -35,7 +35,7 @@ And I find module concerning zips. That is: *zipfile* module.
 
 1. Now there is an ability to give you the documents of itself from command line. The function is completed for use.
 2. Use `-GiveDoc` option to choose document and `-DocLang` option to choose language.
-3. If you use `-ChooseDoc` option you can type in the executor and options to start with. 
+3. If you use `-ChooseDoc` option you can type in the executor and options to start with. (Use `start` as the executor to invoke default application.)
 4. If you're using the builded version, you may need to come with `-GiveDoc_SleepExit {seconds}` or `-GiveDoc_PauseExit`. (Replace '{seconds}' with that you want it to be.
 5. All should be compatible to crossing platforms.
 
