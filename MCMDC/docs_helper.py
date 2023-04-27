@@ -170,14 +170,18 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
         print_log(strings.ERROR_FILE_NOT_FOUND + f'File Path: "{filepath}".')
         return False
     else:
+        executor = executor.strip(' ')
         # Basic Security Examination
         if executor != 'start':
-            if executor.lstrip(' ').find('start ') == 0:
+            if executor.find('start ') == 0:
                 executor_untrusted = executor.partition('start ')[-1]
             else:
                 executor_untrusted = executor
-            executor_untrusted = GetActualExecutorName(executor_untrusted)
-            if osp.exists(executor_untrusted):
+            executor_untrusted = GetActualExecutorName(executor_untrusted.strip('"'))
+            if osp.exists(executor_untrusted) \
+                    and executor_untrusted[0] != osp.sep \
+                    and executor_untrusted[1:3] != ":\\" \
+                    and (not executor_untrusted.startswith('.'+osp.sep) or executor_untrusted.startswith('..'+osp.sep)):
                 executor_untrusted = osp.join('.', executor_untrusted)
             if executor_untrusted not in trusted_docExecutors:
                 print_log(strings.DOCSHELPER_GIVEDOC_WARN_UNTRUSTED_EXECUTOR.format(executor=executor_untrusted))
