@@ -20,7 +20,7 @@ See `working.md`.
 
 2023-1-24:
 
-Some mods are unbearable on version indications. They use `version="${file.jarVersion}"` sentence and the version is not simple format as we thought. Instead, the version string is consist of something else.
+Some mods are unbearable on version indications. They use `version="${file.jarVersion}"` sentence and the version is not some simple format as we thought. Instead, the version string is consist of something else.
 
 If some one can't wait and want to continue the project, here is a piece of advise for you:
 
@@ -40,3 +40,7 @@ I have prepared version-comparing method. The next work is to do with `modId` an
 2023-2-5:
 
 I make the first complete version. Only id check.
+
+---
+
+For more things about what happened in the past few months, see `working.md`'s "Update Logs" Section.
