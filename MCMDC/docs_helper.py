@@ -27,7 +27,7 @@ env_trusted_paths_win32: list
 env_trusted_paths_unix: list
 
 
-def __moreimport__():
+def __moreimport__(slient: bool=False):
     OHEADER = f'{OHEADER_G}/__moreimport__()'
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
@@ -35,7 +35,7 @@ def __moreimport__():
     import constants
     if 'devpause' not in vars() and 'devpause' in vars(constants):
         from constants import devpause
-        print_debug('devpause is imported.', OHEADER, mode.isDebug())
+        print_debug('devpause is imported.', OHEADER, mode.isDebug() and not slient)
         # input('imp')
         # devpause = main.devpause
     print_debug(['devpause' not in vars(), 'devpause' in vars(constants)], OHEADER, mode.isDebug(False))
@@ -94,14 +94,33 @@ def GetActualDocName(doc: str):
     return doc
 
 
-def GetActualExecutorName(executor: str):
+def GetActualExecutorName(executor: str, locator=None):
+    OHEADER = f'{OHEADER_G}/GetActualExecutorName()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
+    __moreimport__(slient=True)
+
     if sys.platform == 'win32':
         priority_list = ['.com', '.exe', '.bat']
         if osp.splitext(executor)[-1] in priority_list:
             return executor
         for i in priority_list:
             te = executor + i
-            if osp.exists(te):
+            if locator is not None:
+                if mode.isDebug() and devpause:
+                    print_debug(locator)
+                    input('paused')
+                te2 = locator(te)
+                print_debug(f'Locator retv: {te2}', OHEADER, mode.isDebug())
+                if te2 is None:
+                    te2 = te
+                else:
+                    te2 = osp.join(te2, te)
+                if mode.isDebug() and devpause:
+                    input('paused')
+            else:
+                te2 = te
+            if osp.exists(te2):
                 return te
         # No legal executable name.
         return executor
@@ -177,11 +196,10 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
                 executor_untrusted = executor.partition('start ')[-1]
             else:
                 executor_untrusted = executor
-            executor_untrusted = GetActualExecutorName(executor_untrusted.strip('"'))
-            if osp.exists(executor_untrusted) \
-                    and executor_untrusted[0] != osp.sep \
-                    and executor_untrusted[1:3] != ":\\" \
-                    and (not executor_untrusted.startswith('.'+osp.sep) or executor_untrusted.startswith('..'+osp.sep)):
+            executor_untrusted = GetActualExecutorName(executor_untrusted.strip('"'), locator=LocateExecutor)
+            if mode.isDebug() and devpause:
+                input('paused')
+            if osp.exists(executor_untrusted) and osp.basename(executor_untrusted) == executor_untrusted:
                 executor_untrusted = osp.join('.', executor_untrusted)
             if executor_untrusted not in trusted_docExecutors:
                 print_log(strings.DOCSHELPER_GIVEDOC_WARN_UNTRUSTED_EXECUTOR.format(executor=executor_untrusted))
@@ -206,6 +224,8 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
                 return False
             elif executor_dir not in env_trusted_paths:
                 print_log(strings.DOCSHELPER_EXECUTOR_NOT_IN_TRUSTED_LOCATION.format(executor_dir=executor_dir))
+            else:
+                print_log('Executor located at (trusted)"{place}". '.format(place=executor_dir))
 
         if executor.lstrip(' ').find('start') == 0:
             if sys.platform == 'win32':
