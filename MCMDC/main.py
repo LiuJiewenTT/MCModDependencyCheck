@@ -5,13 +5,14 @@ import sys
 
 from typing import List
 
-import constants
-from constants import *
+from MCMDC import constants
+from MCMDC.constants import *
 
 ifDebug: int
 
 if __name__ == "__main__":
-    import DebugMode
+    import MCMDC
+    from MCMDC import DebugMode
     ifDebug = DebugMode.DEBUGMODE_NORMAL
     for i in sys.argv:
         if i == '-enableGlobalDebug':
@@ -22,14 +23,14 @@ if __name__ == "__main__":
             ifDebug = DebugMode.DEBUGMODE_DEBUG
             sys.argv.remove('-enableDebug')
             print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Debug".')
-    DebugMode.initDefault_gmode(ifDebug)
+    MCMDC.DebugMode.initDefault_gmode(ifDebug)
     pass
-from DebugMode import *
+from MCMDC.DebugMode import *
 # initDefault_gmode(DEBUGMODE_GDEBUG)
 
-from docs_helper import *
-from common import *
-from Mod import Mod
+from MCMDC.docs_helper import *
+from MCMDC.common import *
+from MCMDC.Mod import Mod
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 # print(__file__)

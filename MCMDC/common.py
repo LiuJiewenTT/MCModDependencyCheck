@@ -1,7 +1,7 @@
 import os
-import strings
-from constants import *
-from DebugMode import *
+from MCMDC import strings
+from MCMDC.constants import *
+from MCMDC.DebugMode import *
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 # print(__file__)

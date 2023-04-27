@@ -1,6 +1,10 @@
 import sys
 import os.path as osp
+import MCMDC
 from MCMDC.constants import *
+if isBuilt:
+    MCMDC.constants.basedir = basedir = osp.normpath(osp.join(basedir, '..'))
+    print(f'{LOGMODE_LOADING_OHEADER}Basedir is set to [{basedir}].')
 # LOGMODE_LOADING_OHEADER = '[ProgramLoad]: '
 
 if __name__ == "__main__":
@@ -15,16 +19,19 @@ if __name__ == "__main__":
             ifDebug = DebugMode.DEBUGMODE_DEBUG
             sys.argv.remove('-enableDebug')
             print(f'{LOGMODE_LOADING_OHEADER}Debug Mode is set to "Debug".')
-    DebugMode.initDefault_gmode(ifDebug)
+    MCMDC.DebugMode.initDefault_gmode(ifDebug)
     pass
 # initDefault_gmode(DEBUGMODE_GDEBUG)
 
 print(f'{LOGMODE_LOADING_OHEADER}Haven\'t import all.')
-sys.path.append(osp.normpath(osp.join(osp.dirname(__file__), 'MCMDC')))
+# sys.path.append(osp.normpath(osp.join(osp.dirname(__file__), 'MCMDC')))
 from MCMDC.pkg_init import *
+# import MCMDC
+# from MCMDC import *
 print(f'{LOGMODE_LOADING_OHEADER}Import all done.')
 from MCMDC.DebugMode import *
 
+# print(globals())
 
 if __name__ == "__main__":
 

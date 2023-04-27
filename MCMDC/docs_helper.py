@@ -7,10 +7,10 @@ import shlex
 
 import psutil
 
-from constants import *
-import strings
-from DebugMode import *
-from common import print_log, print_debug
+from MCMDC.constants import *
+from MCMDC import strings
+from MCMDC.DebugMode import *
+from MCMDC.common import print_log, print_debug
 # from main import devpause
 devpause: bool
 
@@ -32,9 +32,9 @@ def __moreimport__(slient: bool=False):
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     global devpause
-    import constants
+    from . import constants
     if 'devpause' not in vars() and 'devpause' in vars(constants):
-        from constants import devpause
+        from .constants import devpause
         print_debug('devpause is imported.', OHEADER, mode.isDebug() and not slient)
         # input('imp')
         # devpause = main.devpause
@@ -84,13 +84,17 @@ def yieldDocName(doc: str):
         yield retv
 
 def GetActualDocName(doc: str):
+    OHEADER = f'{OHEADER_G}/GetActualDocName()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
     # if osp.exists(doc):
     #     return doc
     for name in yieldDocName(doc):
-        print_debug(name, enabled=False)
+        print_debug(name, OHEADER, mode.isDebug())
         if osp.exists(name):
             return name
     # Leave it
+    print_debug('Cannot get actual doc name. Return: "{name}"'.format(name=doc), OHEADER, mode.isDebug())
     return doc
 
 
@@ -175,6 +179,7 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
             file = reserved_docNames[file]
 
     file_ActualName = GetActualDocName(osp.join(filepath, lang, file))
+    # print_debug('Actual Doc Name: {name}'.format(name=file_ActualName), OHEADER, mode.isDebug())
 
     if not file_ActualName.endswith(file):
         file_ext = osp.splitext(file_ActualName)[-1]

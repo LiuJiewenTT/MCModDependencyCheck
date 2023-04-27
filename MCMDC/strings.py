@@ -1,4 +1,4 @@
-import constants
+from MCMDC import constants
 
 strings_loaded: bool
 # try:
