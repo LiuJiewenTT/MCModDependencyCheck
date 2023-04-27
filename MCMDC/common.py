@@ -1,7 +1,7 @@
 import os
-from . import strings
-from .constants import *
-from .DebugMode import *
+import strings
+from constants import *
+from DebugMode import *
 
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 # print(__file__)
