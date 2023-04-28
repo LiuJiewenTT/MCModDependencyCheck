@@ -190,7 +190,8 @@ class Mod:
             return
         # YES, it's multiple
         # Going to load rules and match
-        print_log('version check is not online.')
+        print_log('Gonna process the version string further with some technics. modId: [{modId}]'.format(modId=self.modinfo.modId))
+        print_log('version check is not online for now. [In Designing Stage]')
         pass
 
         # Finish.

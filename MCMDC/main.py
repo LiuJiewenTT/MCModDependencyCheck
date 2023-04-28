@@ -1,5 +1,5 @@
 import time
-from importlib import resources
+# from importlib import resources
 import os.path
 import sys
 
@@ -51,6 +51,7 @@ GiveDoc_SleepExit: int
 ifChooseDoc: bool
 devpause: bool
 
+
 def main(filedir: str=None):
     OHEADER = f'{OHEADER_G}/main()'
 
@@ -83,6 +84,7 @@ def main(filedir: str=None):
         print_log([strings.MODS_INSUFFICIENT, modIds_insufficient])
         print_log([strings.MODS_LACK_OF, modIds_lack_of])
 
+
 def about_print():
     print(strings.ABOUT_TITLE)
     print(APP_NAME_DISPLAY + f' ({APP_NAME_ABBR})')
@@ -96,6 +98,7 @@ def about_print():
     print(strings.ABOUT_PROJECTLINK + ': ' + PROJECT_LINK)
     print(strings.ABOUT_CONTACTEMAIL + ': ' + CONTACT_EMAIL)
     return
+
 
 def license_print():
     OHEADER = f'{OHEADER_G}/license_print()'
@@ -121,6 +124,7 @@ def license_print():
         print(content)
     return
 
+
 def readmods_dir(filedir: str):
     # read mods from directory
     OHEADER = f'{OHEADER_G}/readmods_dir()'
@@ -144,8 +148,9 @@ def readmods_dir(filedir: str):
         print_debug(strings.EMPTY_FILELIST + f'{strings.STR_FILEDIR}: [{filedir}]', OHEADER, mode.isDebug())
         return []
 
-    mods = readmods( filelist, filedir)
+    mods = readmods(filelist, filedir)
     return mods
+
 
 def readmods(filelist: list, filedir: str=None):
     # read mods from list
@@ -161,6 +166,7 @@ def readmods(filelist: list, filedir: str=None):
         mod.readinfo()
         mods.append(mod)
     return mods
+
 
 def checkModIds(mods: list):
     # check modId
@@ -187,6 +193,7 @@ def checkModIds(mods: list):
             mods_insufficient.append(mod)
 
     return [mods_insufficient, modIds_lack_of]
+
 
 def processArgs(argv: list):
     # Manual
@@ -291,6 +298,7 @@ def processArgs(argv: list):
             retv['isSetDir'] = True
     return retv
 
+
 def applyArgs(args: dict):
     OHEADER = f'{OHEADER_G}/applyArgs()'
     mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
@@ -311,6 +319,7 @@ def applyArgs(args: dict):
     ifChooseDoc = args.get('ChooseDoc')
     devpause = args.get('devpause')
     return
+
 
 def responseArgs():
     OHEADER = f'{OHEADER_G}/responseArgs()'
