@@ -1,2 +1,8 @@
-# First line of content indicates the columns of table.
-modId
+# First line of content indicates the version of this map. It's for version processor.
+# Second line of content indicates the columns of table.
+# Do not try to format it by yourself unless you're very sure about it.
+rough_map_version=1	# [dev]: remember to strip the comma
+# From this line under is the content. And the above is kind of .ini file while the following depends on versions.
+# In this version the following is in .csv fomat. So you can view this file with MS Excel.
+modId,version,answer
+createdeco,1.2.9-1.18.2,1.2.9
