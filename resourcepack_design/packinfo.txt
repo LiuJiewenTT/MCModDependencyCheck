@@ -1,0 +1,9 @@
+packing-version:1.0.0
+package-name:sample-package
+package-target:MCMDC
+package-type:resourcepack
+package-author:unknown
+package-version:0.1.0
+package-description:'''
+This is a sample package.
+'''
