@@ -2,9 +2,9 @@ import sys
 import os.path as osp
 import MCMDC
 from MCMDC.constants import *
-if isBuilt:
-    MCMDC.constants.basedir = basedir = osp.normpath(osp.join(basedir, '..'))
-    print(f'{LOGMODE_LOADING_OHEADER}Basedir is set to [{basedir}].')
+# if isBuilt:
+#     MCMDC.constants.basedir = basedir = osp.normpath(osp.join(basedir, '..'))
+#     print(f'{LOGMODE_LOADING_OHEADER}Basedir is set to [{basedir}].')
 # LOGMODE_LOADING_OHEADER = '[ProgramLoad]: '
 
 if __name__ == "__main__":

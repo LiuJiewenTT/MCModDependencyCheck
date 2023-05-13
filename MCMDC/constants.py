@@ -27,6 +27,28 @@ except Exception as e:
     else:
         isBuilt = True
         print(f'{LOGMODE_LOADING_OHEADER}This is a builded version.')
+        basedir = osp.normpath(osp.join(basedir, '..'))
+        print(f'{LOGMODE_LOADING_OHEADER}Basedir is reset to [{basedir}].')
+
+BuildType: str
+BuildTypeDirectory = 'Directory'
+BuildTypeFile = 'File'
+BuildTypeNone = 'None'
+
+try:
+    if BuildType is None: pass;
+except Exception as e:
+    if isBuilt:
+        if osp.exists(osp.join(basedir, 'BuildTypeDirectory')):
+            BuildType = BuildTypeDirectory
+            print(f'{LOGMODE_LOADING_OHEADER}Build Type: Folder.')
+            # basedir_folder = osp.dirname(osp.abspath(sys.argv[0]))
+            # print(f'{LOGMODE_LOADING_OHEADER}basedir_folder is set to [{basedir_folder}].')
+        else:
+            BuildType = BuildTypeFile
+            print(f'{LOGMODE_LOADING_OHEADER}Build Type: Single.')
+    else:
+        BuildType = BuildTypeNone
 
 devpause: bool
 

@@ -31,7 +31,7 @@ VSVersionInfo(
               StringTable(
                     u'040904B0',
                     [StringStruct(u'CompanyName', u''),
-                    StringStruct(u'FileDescription', u'《我的世界》模组依赖项检查工具(A版)。联系邮箱: liuljwtt@foxmail.com。此程序开源，Github账户：LiuJiewenTT。'),    # 文件说明
+                    StringStruct(u'FileDescription', u'《我的世界》模组依赖项检查工具(B版)。联系邮箱: liuljwtt@foxmail.com。此程序开源，Github账户：LiuJiewenTT。'),    # 文件说明
                     StringStruct(u'FileVersion', u'1.0.0'),
                     StringStruct(u'InternalName', u'MCMDC'),
                     StringStruct(u'LegalCopyright', u'刘杰文'), #版权

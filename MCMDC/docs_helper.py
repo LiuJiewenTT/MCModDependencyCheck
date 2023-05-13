@@ -164,10 +164,16 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
 
     __moreimport__()
 
+    # if isBuilt and BuildType == BuildTypeDirectory:
+    #     librarydir = basedir_folder
+    # else:
+    #     librarydir = basedir
+    librarydir = basedir
+
     if isBuilt:
-        filepath = os.path.join(basedir, 'docs')
+        filepath = os.path.join(librarydir, 'docs')
     else:
-        filepath = os.path.join(basedir, '..', 'docs')
+        filepath = os.path.join(librarydir, '..', 'docs')
         filepath = os.path.normpath(filepath)
 
     print_debug(file, enabled=False)
