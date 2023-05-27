@@ -63,7 +63,9 @@ if strings_loaded is not True:
     LICENSE_FILE_MISSING = 'The file of license is missing. '
     LICENSE_FROM_OUTER = 'The License is from outer and please check the content yourself! '
     ARGUMENTS_NOT_PROCESSED = 'The arguments not processed: '
+    NO_EXECUTOR_ERROR = 'ERROR! No executor. '
     DOCSHELPER_GIVEDOC_OPENING = 'Giving Document...'
+    DOCSHELPER_PROCESS_MONITOR_TIMEOUT_DISABLED = 'Process Supervisor Timeout Disabled. '
 
     # other(to be formatted)
     DOCSHELPER_GIVEDOC_OPENING_DEBUG = 'Giving Document with command: [{command}]'

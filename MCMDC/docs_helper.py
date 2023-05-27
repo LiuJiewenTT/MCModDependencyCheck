@@ -4,6 +4,7 @@ import sys
 import time
 
 import shlex
+from typing import List
 
 import psutil
 
@@ -22,9 +23,9 @@ doc_langs = ['en-us', 'zh-cn']
 
 # If you want to trust "./...", don't just write "..." but "./..." instead.
 trusted_docExecutors = ['notepad.exe']
-env_trusted_paths: list
-env_trusted_paths_win32: list
-env_trusted_paths_unix: list
+env_trusted_paths: List[str]
+env_trusted_paths_win32: List[str]
+env_trusted_paths_unix: List[str]
 
 
 def __moreimport__(slient: bool=False):
@@ -162,7 +163,13 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
     OHEADER = f'{OHEADER_G}/GiveDoc()'
     mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
+    if executor == '':
+        print_log(strings.NO_EXECUTOR_ERROR)
+        raise RuntimeError(strings.NO_EXECUTOR_ERROR)
+
     __moreimport__()
+
+    disableTimeout = False
 
     # if isBuilt and BuildType == BuildTypeDirectory:
     #     librarydir = basedir_folder
@@ -202,9 +209,12 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
     else:
         executor = executor.strip(' ')
         # Basic Security Examination
-        if executor != 'start':
+        if executor != 'start' and executor != 'call':
             if executor.find('start ') == 0:
                 executor_untrusted = executor.partition('start ')[-1]
+            elif executor.find('call ') == 0:
+                executor_untrusted = executor.partition('call ')[-1]
+                disableTimeout = True
             else:
                 executor_untrusted = executor
             executor_untrusted = GetActualExecutorName(executor_untrusted.strip('"'), locator=LocateExecutor)
@@ -242,7 +252,14 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
             if sys.platform == 'win32':
                 executor = executor.replace('start', 'cmd.exe /c start', 1)
             else:
-                executor = executor.replace('start', 'sh', 1)
+                executor = executor.replace('start', 'xdg-open', 1)
+        elif executor.lstrip(' ').find('call') == 0:
+            disableTimeout = True
+            if sys.platform == 'win32':
+                executor = executor.replace('call', 'cmd.exe /c call', 1)
+            else:
+                # executor = executor.replace('start', 'xdg-open', 1)
+                pass
 
         # command = f'{executor} {filepath}'
         # for i in startOptions:
@@ -254,6 +271,10 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
         command = f'{executor} {option_str} {filepath}'
         print_log(strings.DOCSHELPER_GIVEDOC_OPENING)
         print_debug(strings.DOCSHELPER_GIVEDOC_OPENING_DEBUG.format(command=command), OHEADER, mode.isDebug())
+
+        if disableTimeout:
+            print_log(strings.DOCSHELPER_PROCESS_MONITOR_TIMEOUT_DISABLED)
+
         # os.system(command)
         # sp_ret = subprocess.run(command, shell=True)
         # sp_ret = subprocess.call(command, shell=True)
@@ -316,14 +337,14 @@ def GiveDoc(file: str, lang: str = 'en-us', executor: str = 'start', startOption
             len_pre = len_now
             if mode.isDebug():
                 oflist_names_pre = oflist_names
-            if time.time() - t0 >= timeout_basic + timeout_extended:
+            if not disableTimeout and time.time() - t0 >= timeout_basic + timeout_extended:
                 print_log('Process Supervision timeout: Over {timeout} seconds. '.format(timeout=timeout_basic+timeout_extended))
                 print_debug('Process Supervision timeout: Over {timeout_basic}+{timeout_extended} seconds. '
                           .format(timeout_basic=timeout_basic, timeout_extended=timeout_extended), OHEADER, mode.isDebug())
                 break
         # sp.kill() # Should not kill unless it is suspended.
         if sp.is_running() and sp.status() == 'stopped':
-            print_log('Kill suspended subprocess. (pid={pid}'.format(pid=sp.pid))
+            print_log('Kill suspended subprocess. (pid={pid})'.format(pid=sp.pid))
             sp.kill()
 
         if send_started is True and file_opened is False:

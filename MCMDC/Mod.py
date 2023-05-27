@@ -24,7 +24,7 @@ class Mod:
     modinfo: ModInfo
 
     # for possible future development
-    IMG_LOGO: list  # e.g.: np.narray
+    IMG_LOGO: list  # e.g.: np.ndarray
 
 
     def __init__(self, filepath: str=None, filedir: str=None, filename: str=None):

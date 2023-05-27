@@ -134,7 +134,7 @@ def readmods_dir(filedir: str):
 
     filelist = []
     for file in filelist_temp:
-        if os.path.isfile(os.path.join(filedir, file)):
+        if os.path.isfile(os.path.join(filedir, file)) and os.path.splitext(file)[-1] == MOD_EXT:
             filelist.append(file)
 
     # print_debug(['filelist: ', filelist, filelist_temp], OHEADER, mode.isDebug())
@@ -348,7 +348,7 @@ def responseArgs():
         if GiveDoc_PauseExit:
             input('Paused, Enter to resume. ')
         else:
-            print_log('Wait for {seconds} and then exit. '.format(seconds=GiveDoc_SleepExit))
+            print_log('Wait for {seconds} (in sec) and then exit. '.format(seconds=GiveDoc_SleepExit))
             time.sleep(GiveDoc_SleepExit)
         sys.exit(0)
     elif GiveDoc_Name is not None:
@@ -369,7 +369,7 @@ def responseArgs():
         if GiveDoc_PauseExit:
             input('Paused, Enter to resume. ')
         else:
-            print_log('Wait for {seconds} and then exit. '.format(seconds=GiveDoc_SleepExit))
+            print_log('Wait for {seconds} (in sec) and then exit. '.format(seconds=GiveDoc_SleepExit))
             time.sleep(GiveDoc_SleepExit)
         sys.exit(0)
 
