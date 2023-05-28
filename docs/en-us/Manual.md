@@ -3,6 +3,7 @@
 **Product: MCMDC(Minecraft Mod Dependency Check)**
 
 Welcome! Thanks for choosing our product! In this manual, we will introduce all the things with *MCMDC(Minecraft Mod Dependency Check)* to you.
+(More language versions are [provided](#Language Selection Section).)
 
 ![logo](../doc-res/MCMDC-2-GIF2.gif)
 
@@ -15,7 +16,7 @@ The product is now able to check `modId`s and in the future `version`s based on 
 Project Name: *MCModDependencyCheck*<br/>
 License: *GPL-3.0*<br/>
 Project Link: *<https://github.com/LiuJiewenTT/MCModDependencyCheck>*<br/>
-Email: *<liuljwtt@foxmail.com>*
+Email: *<liuljwtt@163.com>*
 
 ## Command Prompt Options
 
@@ -28,3 +29,19 @@ Here list out the options that supported:
 5. `-license`: This option will show you the license of the program.
 6. `-onlyAbout`: This option will only print out the *About* information and exit.
 7. `--version`: tell the version of program and exit.
+8. `-GiveDoc [some doc path]`: To open some specific document provided along with the program. This option comes with a tailing doc path whose default value is "Manual".
+9. `-DocLang [language code]`: To select the language of document. There are only a few presets allowed which includes "en-us"(by default) and "zh-cn".
+10. `-GiveDoc_PauseExit`: This is an advanced option when using with `-GiveDoc` and `-ChooseDoc`. The program would be paused before exit after it delivers the document.
+11. `-GiveDoc_SleepExit [seconds]`: This is an advanced option when using with `-GiveDoc` and `-ChooseDoc`. The program would be paused for a period of time before exit after it delivers the document. `-GiveDoc_PauseExit` has higher priority than this option.
+
+There is some options prepared for debugging:
+
+1. `-enableGlobalDebug`
+2. `-enableDebug`
+3. `--devpause`
+
+## Language Selection Section
+
+- [x] en-us
+- [ ] [zh-cn](../zh-cn/Manual.md)
+
