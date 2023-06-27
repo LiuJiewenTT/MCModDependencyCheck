@@ -87,7 +87,11 @@ class Mod:
                 # read
                 content_bytes = file_target.read()
                 # content_str = str(content_bytes)
-                content_str = content_bytes.decode()
+                try:
+                    content_str = content_bytes.decode()
+                except UnicodeDecodeError as ude:
+                    print_log(f'UnicodeDecodeError: {ude}')
+                    content_str = content_bytes.decode(errors='ignore')
 
                 print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 

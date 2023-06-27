@@ -126,7 +126,7 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
             right_idx = getNonNegativeMin(right_1, right_2)
         except ValueError:
             right_idx = end
-            # print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
+            print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
             print_debug(strings.MEET_PURE_END + strings.ON_THE_RIGHT, OHEADER, mode.isDebug())
 
         if left_str != 'description':
