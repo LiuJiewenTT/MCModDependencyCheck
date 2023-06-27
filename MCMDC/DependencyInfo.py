@@ -38,10 +38,10 @@ class DependencyInfo(Info):
             self.raw = self.datadict.get('raw')
 
             self.modId = self.datadict['modId']
-            self.versionRange = self.datadict['versionRange']
-            self.ordering = self.datadict['ordering']
-            self.side = self.datadict['side']
-            self.mandatory = self.datadict['mandatory']
+            self.versionRange = self.datadict.get('versionRange')
+            self.mandatory = self.datadict.get('mandatory')
+            self.ordering = self.datadict.get('ordering')
+            self.side = self.datadict.get('side')
         except KeyError as ke:
             print_debug([f'KeyError: {ke}. Keys: ', self.datadict.keys()], OHEADER, mode.isDebug())
             raise ke

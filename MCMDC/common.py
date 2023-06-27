@@ -120,22 +120,34 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
         # strip out blankspaces
         left_str = left_str.strip('\r\n ')
 
-        if left_str != 'description':
-            right_1 = raw.find('\r', k, end)
-            right_2 = raw.find('\n', k, end)
-            try:
-                right_idx = getNonNegativeMin(right_1, right_2)
-            except ValueError:
-                right_idx = end
-                # print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
-                print_debug(strings.MEET_PURE_END + strings.ON_THE_RIGHT, OHEADER, mode.isDebug())
+        right_1 = raw.find('\r', k, end)
+        right_2 = raw.find('\n', k, end)
+        try:
+            right_idx = getNonNegativeMin(right_1, right_2)
+        except ValueError:
+            right_idx = end
+            # print_log(strings.MEET_PURE_END + strings.ON_THE_RIGHT)
+            print_debug(strings.MEET_PURE_END + strings.ON_THE_RIGHT, OHEADER, mode.isDebug())
 
+        if left_str != 'description':
             right_str = raw[k + 1: right_idx]
         else:
-            right_1 = raw.find("\'\'\'", k, end) + 3
-            right_2 = raw.find("\'\'\'", right_1, end)
-            right_idx = right_2 + 3
-            right_str = raw[right_1:right_2]
+            right_1 = raw.find('"', k, right_idx)
+            if right_1 != -1:
+                right_2 = raw.find('#', k, right_idx)
+                if right_2 != -1:
+                    right_idx = right_2
+                right_2 = raw.rfind('"', k, right_idx)
+                if right_2 == -1:
+                    print_log(strings.CONTENT_INCOMPLETED)
+                    print_debug(f'{strings.CONTENT_INCOMPLETED} | {raw[k:right_idx]}', OHEADER, mode.isDebug())
+                right_str = raw[right_1 + 1: right_2 - 1]
+                right_str = right_str.strip('\r\n "')
+            else:
+                right_1 = raw.find("\'\'\'", k, end) + 3
+                right_2 = raw.find("\'\'\'", right_1, end)
+                right_idx = right_2 + 3
+                right_str = raw[right_1:right_2]
             print_debug(['description: ', right_str], OHEADER, mode.isDebug())
 
         # strip out blankspaces and \r\n

@@ -55,10 +55,10 @@ class ModInfo(Info):
             self.raw = self.datadict.get('raw')
 
             self.modId = self.datadict['modId']
-            self.version = self.datadict['version']
-            self.displayName = self.datadict['displayName']
-            self.authors = self.datadict['authors']
-            self.description = self.datadict['description']
+            self.version = self.datadict.get('version')
+            self.displayName = self.datadict.get('displayName')
+            self.authors = self.datadict.get('authors')
+            self.description = self.datadict.get('description')
         except KeyError as ke:
             print_debug([f'KeyError: {ke}. Keys: ', self.datadict.keys()], OHEADER, mode.isDebug())
             raise ke
