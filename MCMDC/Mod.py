@@ -99,6 +99,8 @@ class Mod:
                 print_log(strings.WORKING_ON_OTHERINFO)
                 # locate [[mods]]
                 i = content_str.find('[[')
+
+
                 otherInfo: dict = common.extractPairs(content_str, 0, i)
                 # print_debug(['otherinfo: ', otherInfo], OHEADER, mode.isDebug())
 
@@ -107,14 +109,14 @@ class Mod:
                 info = common.getInfo(content_str)
                 print_debug(['info: ', info], OHEADER, mode.isDebug())
 
-                if (info['infotype'] == 'mods'):
+                if (info.get('infotype') == 'mods'):
                     modinfo = ModInfo(info, otherInfo=otherInfo)
                     # modinfo.otherInfo = modinfo.clearValueType(otherInfo)
                     print_debug(f'modinfo.modId: {modinfo.modId}', OHEADER, mode.isDebug())
                     print_debug(['otherInfo', modinfo.otherInfo], OHEADER, mode.isDebug())
                     print_log(strings.CREATE_MODINFO)
                 else:
-                    print_log([strings.INFO_NOT_MOD, f'infotype: {info["infotype"]}'])
+                    print_log([strings.INFO_NOT_MOD, f'infotype: {info.get("infotype")}'])
 
                 # get dependencies and info
                 print_log(strings.WORKING_ON_DEPENDENCYINFO)
@@ -127,7 +129,7 @@ class Mod:
                 for part in parts:
                     print_debug(['part: ', part], OHEADER, mode.isDebug())
                     info = common.getInfo(part)
-                    print_debug(['info: ', info], OHEADER, mode.isDebug())
+                    print_debug(['info: ', info], OHEADER, mode.isDebug(True))
                     # only append real ones.
                     if (common.isInfoTypeDependency(info)):
                         dependencyinfo = DependencyInfo(info)
@@ -166,7 +168,12 @@ class Mod:
                 # read
                 content_bytes = file_target.read()
                 # content_str = str(content_bytes)
-                content_str = content_bytes.decode()
+                # content_str = content_bytes.decode()
+                try:
+                    content_str = content_bytes.decode()
+                except UnicodeDecodeError as ude:
+                    print_log(f'UnicodeDecodeError: {ude}')
+                    content_str = content_bytes.decode(errors='ignore')
 
                 print_debug(['content_str: ', content_str], OHEADER, enabled=mode.isDebug())
 

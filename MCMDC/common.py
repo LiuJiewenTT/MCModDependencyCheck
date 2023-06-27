@@ -30,6 +30,8 @@ def getNonNegativeMin(a, b):
         raise ValueError(strings.ERROR_NO_NONNEGATIVE_VALUE + f': min[{a}, {b}] >= 0')
 
 def isInfoTypeDependency(info: dict):
+    if info is None:
+        return False
     s1: str = info['infotype']
     s2: str = s1.partition('.')[0]
     if s2 == 'dependencies':
@@ -53,8 +55,28 @@ def getInfo(res: str, start=0, end=None):
     if i == -1 or j == -1:
         print_log(strings.CONTENT_INCOMPLETED)
         print_debug([strings.CONTENT_INCOMPLETED, '\'[[\' or \']]\' not found'], OHEADER, mode.isDebug())
+        return None
     if i >= j:
         print_log(strings.INTERVAL_NOT_EXIST + f'[{i},{j}). ')
+        return None
+
+    left_1 = res.rfind('\r', start, i) + 1
+    left_2 = res.rfind('\n', start, i) + 1
+    left_idx = max(left_1, left_2)
+    if left_idx <= start:  # (-1) + 1 = 0; 0 + start
+        # print_log()
+        # raise IndexError()
+        left_idx = start
+        print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+        print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{start}, {i}] .', res[start:i]],
+                    OHEADER,
+                    mode.isDebug())
+    left_idx = res.find('#', left_idx, i)
+    if left_idx != -1:
+        # i = min(i, left_idx)
+        if left_idx < i:
+            print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
+            return None
 
     i += 2
 
@@ -111,7 +133,7 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
             # print_log()
             # raise IndexError()
             left_idx = i
-            # print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+            print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
             print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[i, k, str]: [{i}, {k}] .', raw[i:k]], OHEADER,
                         mode.isDebug())
 
@@ -186,6 +208,26 @@ def getParts(res: str, substr: str=None):
             print_log(strings.CONTENT_INCOMPLETED)
             print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found: '], OHEADER, mode.isDebug())
             break
+
+        left_1 = res.rfind('\r', 0, loc) + 1
+        left_2 = res.rfind('\n', 0, loc) + 1
+        left_idx = max(left_1, left_2)
+        if left_idx <= st:  # (-1) + 1 = 0; 0 + start
+            # print_log()
+            # raise IndexError()
+            left_idx = 0
+            print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+            print_debug(
+                [strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{0}, {loc}] .', res[0:loc]],
+                OHEADER,
+                mode.isDebug())
+        left_idx = res.find('#', left_idx, loc)
+        if left_idx != -1:
+            # i = min(i, left_idx)
+            if left_idx < loc:
+                print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
+                continue
+
         st += 2
         # print(loc, res[st], res[st+1])
         # break

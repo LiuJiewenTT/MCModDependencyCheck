@@ -66,6 +66,7 @@ if strings_loaded is not True:
     NO_EXECUTOR_ERROR = 'ERROR! No executor. '
     DOCSHELPER_GIVEDOC_OPENING = 'Giving Document...'
     DOCSHELPER_PROCESS_MONITOR_TIMEOUT_DISABLED = 'Process Supervisor Timeout Disabled. '
+    SENTENCE_COMMENTED = 'Sentence is commented. '
 
     # other(to be formatted)
     DOCSHELPER_GIVEDOC_OPENING_DEBUG = 'Giving Document with command: [{command}]'
