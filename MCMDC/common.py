@@ -66,7 +66,7 @@ def ifBeingCommented(res: str, start, pos, OHEADER_APPENDIX=None):
     if left_idx != -1:
         # i = min(i, left_idx)
         if left_idx < pos:
-            print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
+            print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug())
             return True
     return False
 
@@ -77,7 +77,7 @@ def getInfo(res: str, start=0, end=None):
     # And this method is specific to mods.toml, which will limit the usage of Info class if being included in.
 
     OHEADER = f'{OHEADER_G}/getInfo()'
-    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
 
     if end is None:
         end = res.__len__()

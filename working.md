@@ -31,6 +31,13 @@ And I find module concerning zips. That is: *zipfile* module.
 
 ## Update Logs
 
+### 2023.6.28
+
+The changes are about all these recent days:
+
+1. UPX is enabled for packing.
+2. Do tests and fix some bugs.
+
 ### 2023.4.26
 
 1. Now there is an ability to give you the documents of itself from command line. The function is completed for use.

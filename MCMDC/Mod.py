@@ -23,6 +23,8 @@ class Mod:
     target2_path = 'META-INF/MANIFEST.MF'
 
     modinfo: ModInfo
+    status: str
+    status_bool: bool = False   # not ready
 
     # for possible future development
     IMG_LOGO: list  # e.g.: np.ndarray

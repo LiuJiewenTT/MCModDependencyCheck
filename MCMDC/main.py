@@ -162,10 +162,12 @@ def readmods(filelist: list, filedir: str=None):
             path_zip = filename
         else:
             path_zip = os.path.join(filedir, filename)
+        print_log(strings.ASTOOL_STARTER_LV1)
         print_log(strings.CURRENT_FILE_PREFIX + '[' + str(path_zip) + ']')
         mod = Mod(filename=filename, filedir=filedir)
         if mod.readinfo():
             mods.append(mod)
+        print_log(strings.ASTOOL_ENDER_LV1)
     return mods
 
 

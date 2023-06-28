@@ -23,6 +23,10 @@ if strings_loaded is not True:
     # Document section
     DOCS_MANUAL = 'Manual'
 
+    # Assisting Tools
+    ASTOOL_STARTER_LV1  = '=+' + '=' * 68
+    ASTOOL_ENDER_LV1    = '=-' + '=' * 68
+
     # other
     CURRENT_FILE_PREFIX = 'Current file: '
     TARGET_FOUNDED = f'Target file exists. '
