@@ -61,11 +61,22 @@ class Mod:
         pass
 
     def readinfo(self):
-        self.readinfo1()
-        if self.modinfo.version != VERSION_REDIRECTED_SIGN:
+        OHEADER = f'{OHEADER_G}/readinfo()'
+        mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
+        self.modinfo = None
+        retvs = self.readinfo1()
+        if type(retvs) == 'list':
+            retv, error_message = retvs
+        if retvs is None and self.modinfo.version != VERSION_REDIRECTED_SIGN:
             self.resolveVersion()
             return
-        # Version is redirected.
+        # Version might be redirected.
+        if self.modinfo is None:
+            print_log(strings.MOD_INCOMPLETE_NOINFO)
+            print_debug(strings.MOD_INCOMPLETE_NOINFO, OHEADER, mode.isDebug())
+            return
+
         print_log(strings.VERSION_REDIRECTED)
         self.readinfo2()
         print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
@@ -181,7 +192,7 @@ class Mod:
                 info = common.extractPairs(content_str, identifier=':')
                 print_debug(['.MF, info: ', info], OHEADER, mode.isDebug())
 
-                self.modinfo.version = info['Implementation-Version']
+                self.modinfo.version = info.get('Implementation-Version')
 
         print_log(strings.MOD_READINFO_DONE_2 + f'mod: [{self.modinfo.getModName()}]')
         pass

@@ -163,8 +163,8 @@ def readmods(filelist: list, filedir: str=None):
             path_zip = os.path.join(filedir, filename)
         print_log(strings.CURRENT_FILE_PREFIX + '[' + str(path_zip) + ']')
         mod = Mod(filename=filename, filedir=filedir)
-        mod.readinfo()
-        mods.append(mod)
+        if mod.readinfo():
+            mods.append(mod)
     return mods
 
 

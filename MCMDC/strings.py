@@ -67,6 +67,7 @@ if strings_loaded is not True:
     DOCSHELPER_GIVEDOC_OPENING = 'Giving Document...'
     DOCSHELPER_PROCESS_MONITOR_TIMEOUT_DISABLED = 'Process Supervisor Timeout Disabled. '
     SENTENCE_COMMENTED = 'Sentence is commented. '
+    MOD_INCOMPLETE_NOINFO = 'Error! Mod is incomplete or special and its information is not read properly. '
 
     # other(to be formatted)
     DOCSHELPER_GIVEDOC_OPENING_DEBUG = 'Giving Document with command: [{command}]'
