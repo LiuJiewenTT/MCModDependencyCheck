@@ -186,10 +186,11 @@ def checkModIds(mods: list):
             if dependencyinfo.modId not in modIds:
                 if toIgnore is True and dependencyinfo.modId in IgnoreList:
                     continue
-                if dependencyinfo.modId not in modIds_lack_of:
-                    if forceMandatory is True or dependencyinfo.mandatory is True:
+
+                if forceMandatory is True or dependencyinfo.mandatory is True:
+                    if dependencyinfo.modId not in modIds_lack_of:
                         modIds_lack_of.append(dependencyinfo.modId)
-                flag = True
+                    flag = True
         if flag is True:
             mods_insufficient.append(mod)
 
