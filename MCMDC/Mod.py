@@ -13,6 +13,7 @@ from .DebugMode import *
 OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
+
 class Mod:
     filename: str
     filepath: str
@@ -184,8 +185,6 @@ class Mod:
 
         print_log(strings.MOD_READINFO_DONE_2 + f'mod: [{self.modinfo.getModName()}]')
         pass
-
-
 
     def resolveVersion(self):
         OHEADER = f'{OHEADER_G}/resolveVersion()'

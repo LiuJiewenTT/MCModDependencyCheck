@@ -8,15 +8,18 @@ OHEADER_G = f'{os.path.relpath(__file__, basedir)}'
 
 gmode = DebugMode(DEBUGMODE_GDEBUG, None)
 
+
 def print_log(para):
     print(LOGMODE_LOG_OHEADER, end='')
     print(para)
+
 
 def print_debug(para, location='unknown', enabled=True):
     if enabled is False:
         return
     print(LOGMODE_DEBUG_OHEADER + f'in [{location}]: ', end='')
     print(para)
+
 
 def getNonNegativeMin(a, b):
     if a < 0 and b >= 0:
@@ -29,6 +32,7 @@ def getNonNegativeMin(a, b):
         print_log(strings.ERROR_NO_NONNEGATIVE_VALUE + f': min[{a}, {b}] >= 0')
         raise ValueError(strings.ERROR_NO_NONNEGATIVE_VALUE + f': min[{a}, {b}] >= 0')
 
+
 def isInfoTypeDependency(info: dict):
     if info is None:
         return False
@@ -37,6 +41,35 @@ def isInfoTypeDependency(info: dict):
     if s2 == 'dependencies':
         return True
     return False
+
+
+def ifBeingCommented(res: str, start, pos, OHEADER_APPENDIX=None):
+    OHEADER = f'{OHEADER_G}/ifBeingCommented()'
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
+
+    if OHEADER_APPENDIX is not None:
+        OHEADER = OHEADER_APPENDIX + ' => ' + OHEADER
+
+    left_1 = res.rfind('\r', start, pos) + 1
+    left_2 = res.rfind('\n', start, pos) + 1
+    left_idx = max(left_1, left_2)
+    if left_idx <= start:  # (-1) + 1 = 0; 0 + start
+        # print_log()
+        # raise IndexError()
+        left_idx = start
+        print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+        print_debug(
+            [strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{start}, {pos}] .', res[start:pos]],
+            OHEADER,
+            mode.isDebug())
+    left_idx = res.find('#', left_idx, pos)
+    if left_idx != -1:
+        # i = min(i, left_idx)
+        if left_idx < pos:
+            print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
+            return True
+    return False
+
 
 def getInfo(res: str, start=0, end=None):
     # This function cannot be included by class Info, because the constructor's input is the output of this function.
@@ -60,23 +93,25 @@ def getInfo(res: str, start=0, end=None):
         print_log(strings.INTERVAL_NOT_EXIST + f'[{i},{j}). ')
         return None
 
-    left_1 = res.rfind('\r', start, i) + 1
-    left_2 = res.rfind('\n', start, i) + 1
-    left_idx = max(left_1, left_2)
-    if left_idx <= start:  # (-1) + 1 = 0; 0 + start
-        # print_log()
-        # raise IndexError()
-        left_idx = start
-        print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
-        print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{start}, {i}] .', res[start:i]],
-                    OHEADER,
-                    mode.isDebug())
-    left_idx = res.find('#', left_idx, i)
-    if left_idx != -1:
-        # i = min(i, left_idx)
-        if left_idx < i:
-            print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
-            return None
+    # left_1 = res.rfind('\r', start, i) + 1
+    # left_2 = res.rfind('\n', start, i) + 1
+    # left_idx = max(left_1, left_2)
+    # if left_idx <= start:  # (-1) + 1 = 0; 0 + start
+    #     # print_log()
+    #     # raise IndexError()
+    #     left_idx = start
+    #     print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+    #     print_debug([strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{start}, {i}] .', res[start:i]],
+    #                 OHEADER,
+    #                 mode.isDebug())
+    # left_idx = res.find('#', left_idx, i)
+    # if left_idx != -1:
+    #     # i = min(i, left_idx)
+    #     if left_idx < i:
+    #         print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
+    #         return None
+    if ifBeingCommented(res, start, i, OHEADER_APPENDIX=OHEADER):
+        return None
 
     i += 2
 
@@ -108,6 +143,7 @@ def getInfo(res: str, start=0, end=None):
     print_debug(['dict1: ', [dict1[x] for x in dict1.keys() if x!='raw']], OHEADER, mode.isDebug())
 
     return dict1
+
 
 def extractPairs(raw: str, start=0, end=None, identifier:str='='):
     OHEADER = f'{OHEADER_G}/extractPairs()'
@@ -184,6 +220,7 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
         dict1['raw'] = raw
     return dict1
 
+
 def getParts(res: str, substr: str=None):
     OHEADER = f'{OHEADER_G}/getParts()'
     global gmode
@@ -209,24 +246,26 @@ def getParts(res: str, substr: str=None):
             print_debug([strings.CONTENT_INCOMPLETED, '\']]\' not found: '], OHEADER, mode.isDebug())
             break
 
-        left_1 = res.rfind('\r', 0, loc) + 1
-        left_2 = res.rfind('\n', 0, loc) + 1
-        left_idx = max(left_1, left_2)
-        if left_idx <= st:  # (-1) + 1 = 0; 0 + start
-            # print_log()
-            # raise IndexError()
-            left_idx = 0
-            print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
-            print_debug(
-                [strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{0}, {loc}] .', res[0:loc]],
-                OHEADER,
-                mode.isDebug())
-        left_idx = res.find('#', left_idx, loc)
-        if left_idx != -1:
-            # i = min(i, left_idx)
-            if left_idx < loc:
-                print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
-                continue
+        # left_1 = res.rfind('\r', 0, loc) + 1
+        # left_2 = res.rfind('\n', 0, loc) + 1
+        # left_idx = max(left_1, left_2)
+        # if left_idx <= st:  # (-1) + 1 = 0; 0 + start
+        #     # print_log()
+        #     # raise IndexError()
+        #     left_idx = 0
+        #     print_log(strings.MEET_PURE_END + strings.ON_THE_LEFT)
+        #     print_debug(
+        #         [strings.MEET_PURE_END + strings.ON_THE_LEFT + f'[start, i, str]: [{0}, {loc}] .', res[0:loc]],
+        #         OHEADER,
+        #         mode.isDebug())
+        # left_idx = res.find('#', left_idx, loc)
+        # if left_idx != -1:
+        #     # i = min(i, left_idx)
+        #     if left_idx < loc:
+        #         print_debug(strings.SENTENCE_COMMENTED, OHEADER, mode.isDebug(True))
+        #         continue
+        if ifBeingCommented(res, 0, loc, OHEADER_APPENDIX=OHEADER):
+            continue
 
         st += 2
         # print(loc, res[st], res[st+1])
