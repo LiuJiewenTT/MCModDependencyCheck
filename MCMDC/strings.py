@@ -59,6 +59,7 @@ if strings_loaded is not True:
     MODS_LACK_OF = 'Some mods are missing. '
     MODPACK_READY = 'OK! This modpack is ready to go. '
     EMPTY_FILELIST = 'The list of files is empty. '
+    EMPTY_MODLIST = 'The list of mods is empty. '
     STR_FILEDIR = 'File directory'
     LICENSE_FILE_MISSING = 'The file of license is missing. '
     LICENSE_FROM_OUTER = 'The License is from outer and please check the content yourself! '

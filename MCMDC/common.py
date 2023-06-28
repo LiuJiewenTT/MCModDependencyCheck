@@ -77,7 +77,7 @@ def getInfo(res: str, start=0, end=None):
     # And this method is specific to mods.toml, which will limit the usage of Info class if being included in.
 
     OHEADER = f'{OHEADER_G}/getInfo()'
-    mode = DebugMode(DEBUGMODE_NORMAL, gmode.mode)
+    mode = DebugMode(DEBUGMODE_GDEBUG, gmode.mode)
 
     if end is None:
         end = res.__len__()
@@ -176,7 +176,7 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
         left_str = raw[left_idx: k]
         # print_debug(['left_str, left_idx, k: ', left_str, left_idx, k], OHEADER, mode.isDebug())
         # strip out blankspaces
-        left_str = left_str.strip('\r\n ')
+        left_str = left_str.strip('\r\n \t')
 
         right_1 = raw.find('\r', k, end)
         right_2 = raw.find('\n', k, end)
@@ -209,7 +209,7 @@ def extractPairs(raw: str, start=0, end=None, identifier:str='='):
             print_debug(['description: ', right_str], OHEADER, mode.isDebug())
 
         # strip out blankspaces and \r\n
-        right_str = right_str.strip('\r\n ')
+        right_str = right_str.strip('\r\n \t')
 
         dict1[left_str] = right_str
 

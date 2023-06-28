@@ -73,6 +73,7 @@ def main(filedir: str=None):
 
     mods = readmods_dir(filedir)
     if mods == []:
+        print_log(strings.EMPTY_MODLIST)
         return
 
     mods_insufficient, modIds_lack_of = checkModIds(mods)

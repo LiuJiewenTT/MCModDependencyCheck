@@ -70,17 +70,18 @@ class Mod:
             retv, error_message = retvs
         if retvs is None and self.modinfo.version != VERSION_REDIRECTED_SIGN:
             self.resolveVersion()
-            return
+            return True
         # Version might be redirected.
         if self.modinfo is None:
             print_log(strings.MOD_INCOMPLETE_NOINFO)
             print_debug(strings.MOD_INCOMPLETE_NOINFO, OHEADER, mode.isDebug())
-            return
+            return False
 
         print_log(strings.VERSION_REDIRECTED)
         self.readinfo2()
         print_log(strings.MOD_READINFO_DONE + f'mod: [{self.modinfo.getModName()}]')
         self.resolveVersion()
+        return True
 
     def readinfo1(self):
         OHEADER = f'{OHEADER_G}/readinfo1()'
@@ -118,17 +119,23 @@ class Mod:
 
                 # get info for modinfo
                 print_log(strings.WORKING_ON_MODINFO)
-                info = common.getInfo(content_str)
-                print_debug(['info: ', info], OHEADER, mode.isDebug())
+                j = 0
+                while True:
+                    info = common.getInfo(content_str, start=j)
+                    print_debug(['info: ', info], OHEADER, mode.isDebug())
 
-                if (info.get('infotype') == 'mods'):
-                    modinfo = ModInfo(info, otherInfo=otherInfo)
-                    # modinfo.otherInfo = modinfo.clearValueType(otherInfo)
-                    print_debug(f'modinfo.modId: {modinfo.modId}', OHEADER, mode.isDebug())
-                    print_debug(['otherInfo', modinfo.otherInfo], OHEADER, mode.isDebug())
-                    print_log(strings.CREATE_MODINFO)
-                else:
-                    print_log([strings.INFO_NOT_MOD, f'infotype: {info.get("infotype")}'])
+                    if info is None:
+                        return [RETV_ERROR, strings.CONTENT_INCOMPLETED]
+                    if (info.get('infotype') == 'mods'):
+                        modinfo = ModInfo(info, otherInfo=otherInfo)
+                        # modinfo.otherInfo = modinfo.clearValueType(otherInfo)
+                        print_debug(f'modinfo.modId: {modinfo.modId}', OHEADER, mode.isDebug())
+                        print_debug(['otherInfo', modinfo.otherInfo], OHEADER, mode.isDebug())
+                        print_log(strings.CREATE_MODINFO)
+                        break
+                    else:
+                        print_log([strings.INFO_NOT_MOD, f'infotype: {info.get("infotype")}'])
+                        j = content_str.find(']]', j) + 2
 
                 # get dependencies and info
                 print_log(strings.WORKING_ON_DEPENDENCYINFO)
@@ -141,7 +148,7 @@ class Mod:
                 for part in parts:
                     print_debug(['part: ', part], OHEADER, mode.isDebug())
                     info = common.getInfo(part)
-                    print_debug(['info: ', info], OHEADER, mode.isDebug(True))
+                    print_debug(['info: ', info], OHEADER, mode.isDebug())
                     # only append real ones.
                     if (common.isInfoTypeDependency(info)):
                         dependencyinfo = DependencyInfo(info)
