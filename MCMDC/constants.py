@@ -55,7 +55,7 @@ devpause: bool
 APP_NAME = 'MCModDependencyCheck'
 APP_NAME_DISPLAY = 'Minecraft Mod Dependency Check'
 APP_NAME_ABBR = 'MCMDC'
-APP_VERSION = '1.0.0'
+APP_VERSION = '1.0.1'
 AUTHORS = ['LiuJiewenTT']
 CONTACT_EMAIL = 'liuljwtt@163.com'
 PROJECT_LINK = 'https://github.com/LiuJiewenTT/MCModDependencyCheck'
